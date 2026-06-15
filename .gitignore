@@ -1,0 +1,34 @@
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.production
+**/.env
+**/.env.local
+**/.env.production
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+sPLASH.PNG
+*.PNG
+*.jpg
+*.jpeg
+*.png
+!frontend/src/assets/logo.jpg
+!frontend/src/assets/branch-baruwa.jpg
