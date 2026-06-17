@@ -14,6 +14,7 @@ import useCartStore from "../../store/cartStore";
 import useUserStore from "../../store/userStore";
 import AuthModal from "../ui/AuthModal";
 import toast from "react-hot-toast";
+import logoImg from "../../assets/logo.jpg";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -81,7 +82,7 @@ export default function Navbar() {
               aria-label="Yum-Yum Cafe Home"
             >
               <img
-                src="/src/assets/logo.jpg"
+                src={logoImg}
                 alt="Yum-Yum Cafe"
                 className="w-20 h-20 rounded-full object-cover flex-shrink-0"
               />
@@ -245,7 +246,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/20">
             <Link to="/" className="flex items-center gap-2">
               <img
-                src="/src/assets/logo.jpg"
+                src={logoImg}
                 alt="Yum-Yum Cafe"
                 className="w-8 h-8 rounded-full object-cover"
               />

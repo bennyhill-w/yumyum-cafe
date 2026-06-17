@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MapPin, Mail, Clock } from "lucide-react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { useBranches } from "../../hooks/useBranches";
+import logoImg from "../../assets/logo.jpg";
 
 const quickLinks = [
   { to: "/", label: "Home" },
@@ -30,7 +31,7 @@ export default function Footer() {
               aria-label="Yum-Yum Cafe Home"
             >
               <img
-                src="/src/assets/logo.jpg"
+                src={logoImg}
                 alt="Yum-Yum Cafe"
                 className="h-10 w-10 object-cover rounded"
               />
