@@ -32,3 +32,8 @@ sPLASH.PNG
 *.png
 !frontend/src/assets/logo.jpg
 !frontend/src/assets/branch-baruwa.jpg
+!frontend/src/assets/Burger.png
+!frontend/src/assets/Food.png
+!frontend/src/assets/Ice-Cream.png
+!frontend/src/assets/Bread-removebg-preview.png
+!frontend/src/assets/Hall.jpg
