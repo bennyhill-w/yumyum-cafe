@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi";
 import useAuthStore from "../../store/authStore";
+import logoImg from "../../assets/logo.jpg";
 
 const PAGE_TITLES = {
   "/orders": "Orders",
@@ -23,18 +24,25 @@ export default function AdminNavbar({ onMenuClick }) {
         >
           <FiMenu size={20} />
         </button>
-        <div>
-          <h1 className="font-display font-bold text-gray-900 text-xl">
-            {PAGE_TITLES[pathname] || "Dashboard"}
-          </h1>
-          <p className="text-gray-400 text-xs font-sans">
-            {new Date().toLocaleDateString("en-NG", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
+        <div className="flex items-center gap-3">
+          <img
+            src={logoImg}
+            alt="Yum-Yum Cafe Admin Logo"
+            className="w-11 h-11 rounded-2xl object-cover"
+          />
+          <div>
+            <h1 className="font-display font-bold text-gray-900 text-xl">
+              {PAGE_TITLES[pathname] || "Dashboard"}
+            </h1>
+            <p className="text-gray-400 text-xs font-sans max-w-[220px] truncate">
+              {new Date().toLocaleDateString("en-NG", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -42,7 +50,7 @@ export default function AdminNavbar({ onMenuClick }) {
         <button className="relative p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors">
           <FiBell size={18} />
         </button>
-        <div className="flex items-center gap-2.5 pl-3 border-l border-gray-100">
+        <div className="hidden sm:flex items-center gap-2.5 pl-3 border-l border-gray-100">
           <div className="w-8 h-8 rounded-xl bg-brand-red flex items-center justify-center">
             <span className="text-white font-bold text-xs font-sans">
               {admin?.name?.charAt(0) || "A"}

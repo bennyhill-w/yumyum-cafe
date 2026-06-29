@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,6 +13,7 @@ import {
   FiEye,
   FiEyeOff,
   FiStar,
+  FiMapPin,
 } from "react-icons/fi";
 import { IoFlameSharp } from "react-icons/io5";
 import { MdNewReleases } from "react-icons/md";
@@ -41,19 +42,29 @@ const CATEGORIES = [
   { id: "desserts", label: "Desserts" },
 ];
 
-// Branch options are loaded dynamically inside the component via API
-
 const EMPTY_FORM = {
   name: "",
   description: "",
   price: "",
   category: "rice-dishes",
-  branch_id: "baruwa",
   is_available: true,
   is_popular: false,
   is_new: false,
   image_url: "",
 };
+
+// Fields that are safe to copy across branches.
+// is_available and branch_id are deliberately excluded —
+// availability is always branch-specific.
+const SYNCABLE_FIELDS = [
+  "name",
+  "description",
+  "price",
+  "category",
+  "image_url",
+  "is_popular",
+  "is_new",
+];
 
 // ── ITEM CARD ──
 function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
@@ -87,7 +98,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
         item.is_available ? "border-gray-100" : "border-red-100"
       }`}
     >
-      {/* Image */}
       <div className="relative h-44 bg-gray-100 overflow-hidden group">
         <img
           src={
@@ -101,7 +111,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
           loading="lazy"
         />
 
-        {/* Out of stock overlay */}
         {!item.is_available && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <span className="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full font-sans uppercase tracking-wider">
@@ -110,7 +119,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
           </div>
         )}
 
-        {/* Badges */}
         <div className="absolute top-2 left-2 flex gap-1.5">
           {item.is_popular && (
             <span className="inline-flex items-center gap-1 bg-brand-red text-white text-[10px] font-bold px-2 py-1 rounded-full">
@@ -124,7 +132,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
           )}
         </div>
 
-        {/* Upload overlay on hover */}
         <div
           onClick={handleImageClick}
           className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all cursor-pointer flex items-center justify-center"
@@ -151,7 +158,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
         />
       </div>
 
-      {/* Content */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-bold text-gray-900 text-sm font-sans leading-tight flex-1">
@@ -170,14 +176,9 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
           <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full font-sans capitalize">
             {item.category?.replace("-", " ")}
           </span>
-          <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full font-sans capitalize">
-            {item.branch_id}
-          </span>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
-          {/* Available toggle */}
           <button
             onClick={() => onToggle(item.id)}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold font-sans transition-all ${
@@ -197,7 +198,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
             )}
           </button>
 
-          {/* Edit */}
           <button
             onClick={() => onEdit(item)}
             className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-brand-red-light hover:text-brand-red transition-colors"
@@ -205,7 +205,6 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
             <FiEdit2 size={13} />
           </button>
 
-          {/* Delete */}
           <button
             onClick={() => onDelete(item)}
             className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors"
@@ -219,7 +218,7 @@ function MenuItemCard({ item, onEdit, onDelete, onToggle, onImageUpload }) {
 }
 
 // ── ITEM FORM MODAL ──
-function ItemModal({ item, branches = [], onClose, onSave, saving }) {
+function ItemModal({ item, defaultBranchId, onClose, onSave, saving }) {
   const [form, setForm] = useState(
     item
       ? {
@@ -227,7 +226,6 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
           description: item.description || "",
           price: item.price || "",
           category: item.category || "rice-dishes",
-          branch_id: item.branch_id || "baruwa",
           is_available: item.is_available ?? true,
           is_popular: item.is_popular ?? false,
           is_new: item.is_new ?? false,
@@ -235,6 +233,7 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
         }
       : { ...EMPTY_FORM },
   );
+  const [syncAllBranches, setSyncAllBranches] = useState(true);
   const imageFileRef = useRef(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(item?.image_url || "");
@@ -276,7 +275,7 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
       toast.error("Category is required");
       return;
     }
-    onSave({ ...form, price: Number(form.price) });
+    onSave({ ...form, price: Number(form.price) }, syncAllBranches);
   };
 
   return (
@@ -308,7 +307,6 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
           </div>
 
           <div className="p-6 space-y-4">
-            {/* Name */}
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
                 Item Name <span className="text-brand-red">*</span>
@@ -321,7 +319,6 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
               />
             </div>
 
-            {/* Description */}
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
                 Description
@@ -335,7 +332,6 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
               />
             </div>
 
-            {/* Price + Category */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
@@ -368,24 +364,38 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
               </div>
             </div>
 
-            {/* Branch */}
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
-                Branch
-              </label>
-              <select
-                value={form.branch_id}
-                onChange={(e) => set("branch_id", e.target.value)}
-                className={`${inputCls} appearance-none cursor-pointer`}
+            {/* Branch sync option */}
+            <div
+              onClick={() => setSyncAllBranches((v) => !v)}
+              className={`flex items-start gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                syncAllBranches
+                  ? "border-brand-red bg-brand-red-light"
+                  : "border-gray-200 bg-white"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                  syncAllBranches ? "bg-brand-red" : "bg-gray-200"
+                }`}
               >
-                {branches
-                  .filter((b) => b.id)
-                  .map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.label}
-                    </option>
-                  ))}
-              </select>
+                {syncAllBranches && <FiCheck className="text-white" size={13} />}
+              </div>
+              <div>
+                <p
+                  className={`text-sm font-bold font-sans ${
+                    syncAllBranches ? "text-brand-red" : "text-gray-700"
+                  }`}
+                >
+                  {item
+                    ? "Apply these changes to all branches"
+                    : "Add this dish to all branches at once"}
+                </p>
+                <p className="text-gray-400 text-xs font-sans mt-0.5">
+                  {item
+                    ? "Updates the price, description, photo and badges for this dish everywhere. Availability always stays branch-specific."
+                    : "Creates this dish in Baruwa, Ijegun, Ipaja and Isheri in one go instead of adding it 4 times."}
+                </p>
+              </div>
             </div>
 
             {/* Food Image */}
@@ -448,26 +458,22 @@ function ItemModal({ item, branches = [], onClose, onSave, saving }) {
               />
             </div>
 
-            {/* Toggles */}
             <div className="grid grid-cols-3 gap-3">
               {[
                 {
                   key: "is_available",
                   label: "Available",
                   icon: <FiEye size={14} />,
-                  activeColor: "bg-green-500",
                 },
                 {
                   key: "is_popular",
                   label: "Popular",
                   icon: <IoFlameSharp size={14} />,
-                  activeColor: "bg-brand-red",
                 },
                 {
                   key: "is_new",
                   label: "New Item",
                   icon: <MdNewReleases size={14} />,
-                  activeColor: "bg-blue-500",
                 },
               ].map((toggle) => (
                 <button
@@ -560,7 +566,7 @@ function DeleteConfirm({ item, onConfirm, onCancel, deleting }) {
           <p className="text-gray-500 text-sm font-sans mb-6">
             Are you sure you want to delete{" "}
             <span className="font-bold text-gray-900">"{item?.name}"</span>?
-            This cannot be undone.
+            This only removes it from this branch and cannot be undone.
           </p>
           <div className="flex gap-3">
             <button
@@ -597,14 +603,30 @@ export default function MenuManager() {
   const [editItem, setEditItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [savingItem, setSavingItem] = useState(false);
   const queryClient = useQueryClient();
+
+  const { data: branchesData } = useQuery({
+    queryKey: ["branches"],
+    queryFn: () => api.get("/branches").then((r) => r.data),
+  });
+
+  const BRANCH_OPTIONS = (branchesData?.data || []).map((b) => ({
+    id: b.id,
+    label: b.name,
+  }));
+
+  // Always default to the first real branch — never a mixed "all branches" view.
+  useEffect(() => {
+    if (!branchFilter && BRANCH_OPTIONS.length > 0) {
+      setBranchFilter(BRANCH_OPTIONS[0].id);
+    }
+  }, [BRANCH_OPTIONS.length]);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-menu", branchFilter],
-    queryFn: () =>
-      getAdminMenu({
-        ...(branchFilter && { branch_id: branchFilter }),
-      }).then((r) => r.data),
+    queryFn: () => getAdminMenu({ branch_id: branchFilter }).then((r) => r.data),
+    enabled: !!branchFilter,
   });
 
   const { mutate: doToggle } = useMutation({
@@ -614,27 +636,6 @@ export default function MenuManager() {
       toast.success("Availability updated");
     },
     onError: () => toast.error("Failed to update"),
-  });
-
-  const { mutate: doUpdate, isPending: updating } = useMutation({
-    mutationFn: ({ id, data }) => updateMenuItem(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["admin-menu"]);
-      toast.success("Item updated!");
-      setEditItem(null);
-    },
-    onError: () => toast.error("Failed to update item"),
-  });
-
-  const { mutate: doCreate, isPending: creating } = useMutation({
-    mutationFn: (data) => createMenuItem(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["admin-menu"]);
-      toast.success("Item added!");
-      setShowAddModal(false);
-    },
-    onError: (err) =>
-      toast.error(err.response?.data?.message || "Failed to add item"),
   });
 
   const { mutate: doDelete, isPending: deleting } = useMutation({
@@ -660,28 +661,68 @@ export default function MenuManager() {
     }
   };
 
-  const { data: branchesData } = useQuery({
-    queryKey: ["branches"],
-    queryFn: () => api.get("/branches").then((r) => r.data),
-  });
+  // Edit save — always updates the specific row by id.
+  // If syncAllBranches is true, also finds same-named dishes in other
+  // branches (via a fresh, unscoped fetch) and updates only the safe,
+  // shared fields on each of them.
+  const handleSaveEdit = async (id, formData, syncAllBranches) => {
+    setSavingItem(true);
+    try {
+      await updateMenuItem(id, formData);
 
-  const BRANCH_OPTIONS = [
-    { id: "", label: "All Branches" },
-    ...(branchesData?.data || []).map((b) => ({ id: b.id, label: b.name })),
-  ];
+      if (syncAllBranches) {
+        const allRes = await getAdminMenu({});
+        const allItems = allRes.data?.data || [];
+        const matchKey = formData.name.toLowerCase().trim();
+        const matches = allItems.filter(
+          (it) => it.id !== id && it.name.toLowerCase().trim() === matchKey,
+        );
+        const syncPayload = {};
+        SYNCABLE_FIELDS.forEach((f) => (syncPayload[f] = formData[f]));
+        await Promise.all(
+          matches.map((m) => updateMenuItem(m.id, syncPayload)),
+        );
+      }
+
+      await queryClient.invalidateQueries(["admin-menu"]);
+      toast.success(
+        syncAllBranches ? "Item updated across all branches!" : "Item updated!",
+      );
+      setEditItem(null);
+    } catch (err) {
+      toast.error("Failed to update item");
+    } finally {
+      setSavingItem(false);
+    }
+  };
+
+  // Create save — creates in the current branch, or in every branch at once.
+  const handleSaveCreate = async (formData, syncAllBranches) => {
+    setSavingItem(true);
+    try {
+      if (syncAllBranches && BRANCH_OPTIONS.length > 0) {
+        await Promise.all(
+          BRANCH_OPTIONS.map((b) =>
+            createMenuItem({ ...formData, branch_id: b.id }),
+          ),
+        );
+        toast.success("Item added to all branches!");
+      } else {
+        await createMenuItem({ ...formData, branch_id: branchFilter });
+        toast.success("Item added!");
+      }
+      await queryClient.invalidateQueries(["admin-menu"]);
+      setShowAddModal(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to add item");
+    } finally {
+      setSavingItem(false);
+    }
+  };
 
   const items = data?.data || [];
 
-  // Deduplicate by name for display — show each unique dish once
-  const seen = new Set();
-  const uniqueItems = items.filter((item) => {
-    const key = item.name.toLowerCase().trim();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  const filtered = uniqueItems.filter((item) => {
+  const filtered = items.filter((item) => {
     const matchesSearch =
       !search ||
       item.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -692,14 +733,30 @@ export default function MenuManager() {
   });
 
   const stats = {
-    total: uniqueItems.length,
-    available: uniqueItems.filter((i) => i.is_available).length,
-    outOfStock: uniqueItems.filter((i) => !i.is_available).length,
-    popular: uniqueItems.filter((i) => i.is_popular).length,
+    total: items.length,
+    available: items.filter((i) => i.is_available).length,
+    outOfStock: items.filter((i) => !i.is_available).length,
+    popular: items.filter((i) => i.is_popular).length,
   };
+
+  const currentBranchLabel =
+    BRANCH_OPTIONS.find((b) => b.id === branchFilter)?.label || "—";
 
   return (
     <div className="space-y-6">
+      {/* Branch context banner */}
+      <div className="bg-brand-red-light border border-brand-red/20 rounded-2xl px-5 py-3.5 flex items-center gap-3">
+        <div className="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center flex-shrink-0">
+          <FiMapPin className="text-white" size={16} />
+        </div>
+        <p className="text-brand-red text-sm font-sans">
+          You are managing the menu for{" "}
+          <span className="font-bold">{currentBranchLabel}</span>. Switch
+          branches below to manage a different location, or check "apply to
+          all branches" when editing to keep dishes consistent everywhere.
+        </p>
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -736,7 +793,6 @@ export default function MenuManager() {
       {/* Filters + Add button */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
         <div className="flex flex-wrap gap-3 items-center">
-          {/* Search */}
           <div className="relative flex-1 min-w-48">
             <FiSearch
               className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
@@ -751,7 +807,6 @@ export default function MenuManager() {
             />
           </div>
 
-          {/* Category */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -764,14 +819,14 @@ export default function MenuManager() {
             ))}
           </select>
 
-          {/* Branch */}
+          {/* Branch — always required, no "All Branches" option */}
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-sans focus:outline-none focus:ring-2 focus:ring-brand-red appearance-none cursor-pointer"
+            className="px-4 py-2.5 bg-brand-red text-white font-bold border border-brand-red rounded-xl text-sm font-sans focus:outline-none focus:ring-2 focus:ring-brand-red appearance-none cursor-pointer"
           >
             {BRANCH_OPTIONS.map((b) => (
-              <option key={b.id} value={b.id}>
+              <option key={b.id} value={b.id} className="text-gray-900 bg-white">
                 {b.label}
               </option>
             ))}
@@ -784,7 +839,6 @@ export default function MenuManager() {
             <FiRefreshCw size={14} /> Refresh
           </button>
 
-          {/* Add button */}
           <motion.button
             onClick={() => setShowAddModal(true)}
             whileHover={{ scale: 1.03 }}
@@ -800,7 +854,7 @@ export default function MenuManager() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-display font-bold text-gray-900 text-lg">
-            Menu Items ({filtered.length})
+            {currentBranchLabel} Menu ({filtered.length})
           </h2>
           <div className="flex items-center gap-3 text-xs font-sans text-gray-400">
             <span className="flex items-center gap-1">
@@ -812,7 +866,7 @@ export default function MenuManager() {
           </div>
         </div>
 
-        {isLoading ? (
+        {isLoading || !branchFilter ? (
           <div className="flex items-center justify-center py-24">
             <Spinner size={36} className="text-brand-red" />
           </div>
@@ -826,7 +880,7 @@ export default function MenuManager() {
             </p>
             <p className="text-gray-400 text-sm font-sans mb-6">
               {items.length === 0
-                ? "No menu items yet. Add your first item to get started."
+                ? `No menu items yet for ${currentBranchLabel}. Add your first item to get started.`
                 : "Try a different search or filter."}
             </p>
             {items.length === 0 && (
@@ -858,29 +912,25 @@ export default function MenuManager() {
         )}
       </div>
 
-      {/* Edit modal */}
       {editItem && (
         <ItemModal
           item={editItem}
-          branches={BRANCH_OPTIONS}
           onClose={() => setEditItem(null)}
-          onSave={(data) => doUpdate({ id: editItem.id, data })}
-          saving={updating}
+          onSave={(data, syncAll) => handleSaveEdit(editItem.id, data, syncAll)}
+          saving={savingItem}
         />
       )}
 
-      {/* Add modal */}
       {showAddModal && (
         <ItemModal
           item={null}
-          branches={BRANCH_OPTIONS}
+          defaultBranchId={branchFilter}
           onClose={() => setShowAddModal(false)}
-          onSave={(data) => doCreate(data)}
-          saving={creating}
+          onSave={(data, syncAll) => handleSaveCreate(data, syncAll)}
+          saving={savingItem}
         />
       )}
 
-      {/* Delete confirm */}
       {deleteItem && (
         <DeleteConfirm
           item={deleteItem}

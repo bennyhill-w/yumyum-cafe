@@ -366,12 +366,12 @@ export default function FeaturedDishes() {
   return (
     <section
       ref={ref}
-      className="py-24 bg-white relative overflow-hidden"
+      className="py-24 bg-gray-50 relative overflow-hidden"
       aria-labelledby="featured-heading"
     >
       {/* Decorative background elements */}
-      <div className="absolute -right-32 top-0 w-64 h-64 rounded-full bg-brand-red/5 blur-3xl pointer-events-none" />
-      <div className="absolute -left-32 bottom-0 w-96 h-96 rounded-full bg-brand-gold-light/10 blur-3xl pointer-events-none" />
+      <div className="absolute -right-32 top-0 w-64 h-64 rounded-full bg-brand-red/10 blur-3xl pointer-events-none" />
+      <div className="absolute -left-32 bottom-0 w-96 h-96 rounded-full bg-brand-gold-light/20 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
         {/* Header */}

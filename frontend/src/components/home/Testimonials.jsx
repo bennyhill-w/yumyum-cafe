@@ -65,27 +65,29 @@ export default function Testimonials() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative bg-gray-50 rounded-3xl p-8 sm:p-12 overflow-hidden"
+          className="relative bg-brand-red rounded-3xl p-8 sm:p-12 overflow-hidden"
         >
-          {/* Decorative quote */}
-          <div className="absolute top-6 right-8 opacity-5">
-            <MdFormatQuote size={120} className="text-brand-red" />
+          {/* Pattern overlay */}
+          <div className="absolute inset-0 bg-hero-pattern opacity-10 pointer-events-none" />
+
+          {/* Decorative quote mark */}
+          <div className="absolute top-6 right-8 opacity-10">
+            <MdFormatQuote size={120} className="text-white" />
           </div>
 
           {/* Stars */}
-          <div className="flex gap-1 mb-6">
+          <div className="flex gap-1 mb-6 relative z-10">
             {Array.from({ length: 5 }).map((_, i) => (
               <AiFillStar
                 key={i}
-                className="text-brand-gold-mid"
                 size={22}
-                style={{ fill: "#D97706" }}
+                style={{ fill: "#FCD34D" }}
               />
             ))}
           </div>
 
           {/* Quote */}
-          <div className="min-h-[100px] mb-8">
+          <div className="min-h-[100px] mb-8 relative z-10">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.p
                 key={current}
@@ -95,15 +97,15 @@ export default function Testimonials() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="text-gray-700 text-xl sm:text-2xl font-display leading-relaxed"
+                className="text-white text-xl sm:text-2xl font-display leading-relaxed"
               >
-                "{PLACEHOLDER_TESTIMONIALS[current].text}"
+                &ldquo;{PLACEHOLDER_TESTIMONIALS[current].text}&rdquo;
               </motion.p>
             </AnimatePresence>
           </div>
 
           {/* Author + controls */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative z-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`author-${current}`}
@@ -112,18 +114,18 @@ export default function Testimonials() {
                 exit={{ opacity: 0 }}
                 className="flex items-center gap-3"
               >
-                <div className="w-11 h-11 rounded-full bg-brand-red flex items-center justify-center flex-shrink-0">
+                <div className="w-11 h-11 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-bold font-sans">
                     {PLACEHOLDER_TESTIMONIALS[current].name.charAt(0)}
                   </span>
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 text-sm font-sans">
+                  <p className="font-bold text-white text-sm font-sans">
                     {PLACEHOLDER_TESTIMONIALS[current].name}
                   </p>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold-mid" />
-                    <p className="text-gray-400 text-xs font-sans">
+                    <div className="w-1.5 h-1.5 rounded-full bg-yellow-300" />
+                    <p className="text-white/60 text-xs font-sans">
                       {PLACEHOLDER_TESTIMONIALS[current].location} Branch
                     </p>
                   </div>
@@ -134,13 +136,13 @@ export default function Testimonials() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => go(-1)}
-                className="w-10 h-10 rounded-full border-2 border-gray-200 text-gray-500 flex items-center justify-center hover:border-brand-red hover:text-brand-red transition-colors"
+                className="w-10 h-10 rounded-full bg-white/15 border border-white/25 text-white flex items-center justify-center hover:bg-white/25 transition-colors"
               >
                 <FiChevronLeft size={18} />
               </button>
               <button
                 onClick={() => go(1)}
-                className="w-10 h-10 rounded-full bg-brand-red text-white flex items-center justify-center hover:bg-brand-red-dark transition-colors"
+                className="w-10 h-10 rounded-full bg-white text-brand-red flex items-center justify-center hover:bg-gray-50 transition-colors"
               >
                 <FiChevronRight size={18} />
               </button>
@@ -148,7 +150,7 @@ export default function Testimonials() {
           </div>
 
           {/* Progress dots */}
-          <div className="flex gap-2 mt-6">
+          <div className="flex gap-2 mt-6 relative z-10">
             {PLACEHOLDER_TESTIMONIALS.map((_, i) => (
               <button
                 key={i}
@@ -158,8 +160,8 @@ export default function Testimonials() {
                 }}
                 className={`rounded-full transition-all duration-300 ${
                   i === current
-                    ? "w-7 h-2 bg-brand-red"
-                    : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+                    ? "w-7 h-2 bg-white"
+                    : "w-2 h-2 bg-white/30 hover:bg-white/50"
                 }`}
               />
             ))}

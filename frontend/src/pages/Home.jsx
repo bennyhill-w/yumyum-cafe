@@ -54,10 +54,7 @@ function StatsBar() {
   }, [inView]);
 
   return (
-    <section
-      ref={ref}
-      className="py-16 bg-white border-t border-b border-gray-100"
-    >
+    <section ref={ref} className="py-16 bg-gray-900">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {targets.map((_, i) => (
@@ -69,13 +66,20 @@ function StatsBar() {
               className="text-center"
             >
               <div
-                className="font-display font-bold text-brand-red mb-1.5"
-                style={{ fontSize: "clamp(36px, 5vw, 56px)" }}
+                className="font-display font-bold mb-1.5"
+                style={{
+                  fontSize: "clamp(36px, 5vw, 56px)",
+                  background:
+                    "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
               >
                 {counts[i].toLocaleString()}
                 {suffixes[i]}
               </div>
-              <p className="text-gray-500 text-sm font-sans font-semibold">
+              <p className="text-gray-400 text-sm font-sans font-semibold">
                 {labels[i]}
               </p>
             </motion.div>
@@ -167,22 +171,16 @@ export default function Home() {
     <>
       <HeroSection />
       <MarqueeStrip />
-      <SectionDivider color="#B91C1C" opacity={0.98} variant="wave" />
       <StatsBar />
-      <SectionDivider color="#B91C1C" opacity={0.98} variant="curve" />
+      <SectionDivider color="#ffffff" opacity={1} variant="wave" />
       <FeaturedDishes />
-      <SectionDivider color="#B91C1C" opacity={0.98} variant="tilt" />
+      <SectionDivider color="#B91C1C" opacity={1} variant="curve" />
       <WhyUs />
-      <SectionDivider
-        color="#B91C1C"
-        opacity={0.98}
-        variant="wave"
-        flip={true}
-      />
+      <SectionDivider color="#111827" opacity={1} variant="tilt" />
       <BranchStrip />
-      <SectionDivider color="#B91C1C" opacity={0.98} variant="curve" />
+      <SectionDivider color="#ffffff" opacity={1} variant="wave" flip={true} />
       <Testimonials />
-      <SectionDivider color="#B91C1C" opacity={0.95} variant="wave" />
+      <SectionDivider color="#B91C1C" opacity={1} variant="curve" />
       <OrderCTA />
     </>
   );

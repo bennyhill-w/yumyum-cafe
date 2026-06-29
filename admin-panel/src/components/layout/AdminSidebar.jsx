@@ -1,5 +1,6 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import logoImg from "../../assets/logo.jpg";
 import {
   FiShoppingCart,
   FiCalendar,
@@ -9,7 +10,6 @@ import {
   FiGrid,
   FiMapPin,
 } from "react-icons/fi";
-import { MdStorefront } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "../../services/ordersService";
 import { getReservations } from "../../services/reservationsService";
@@ -114,12 +114,14 @@ function SidebarContent({ onClose }) {
     <div className="flex flex-col h-full bg-white border-r border-gray-100">
       {/* Logo */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center">
-            <MdStorefront className="text-white" size={18} />
-          </div>
+        <div className="flex items-center gap-4">
+          <img
+            src={logoImg}
+            alt="Yum-Yum Cafe Admin Logo"
+            className="w-12 h-12 rounded-3xl object-cover"
+          />
           <div>
-            <p className="font-display font-bold text-gray-900 text-sm leading-none">
+            <p className="font-display font-bold text-gray-900 text-base sm:text-sm leading-none">
               Yum-Yum Cafe
             </p>
             <p className="text-gray-400 text-xs font-sans mt-0.5">
@@ -140,7 +142,7 @@ function SidebarContent({ onClose }) {
       {/* Admin info */}
       <div className="px-5 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3 bg-brand-red-light rounded-2xl p-3">
-          <div className="w-9 h-9 rounded-xl bg-brand-red flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-brand-red flex items-center justify-center flex-shrink-0">
             <span className="text-white font-bold text-sm font-sans">
               {admin?.name?.charAt(0) || "A"}
             </span>
@@ -248,7 +250,7 @@ export default function AdminSidebar({ open, onClose }) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed top-0 left-0 h-full w-72 z-50 lg:hidden"
+              className="fixed top-0 left-0 h-full w-80 sm:w-72 z-50 lg:hidden"
             >
               <SidebarContent onClose={onClose} />
             </motion.div>

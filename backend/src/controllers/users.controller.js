@@ -2,7 +2,11 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
+import { OAuth2Client } from "google-auth-library";
+import { sendOTPEmail } from "../services/email.service.js";
 import supabase from "../services/supabase.js";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 function generateToken(user) {
   return jwt.sign(
@@ -29,12 +33,10 @@ export async function register(req, res) {
         .status(400)
         .json({ success: false, message: "Enter a valid email" });
     if (!password || password.length < 6)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Password must be at least 6 characters",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
 
     // Check if email already exists
     const { data: existing } = await supabase
@@ -44,12 +46,10 @@ export async function register(req, res) {
       .single();
 
     if (existing)
-      return res
-        .status(409)
-        .json({
-          success: false,
-          message: "An account with this email already exists",
-        });
+      return res.status(409).json({
+        success: false,
+        message: "An account with this email already exists",
+      });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -67,6 +67,21 @@ export async function register(req, res) {
       .single();
 
     if (error) throw error;
+
+    // Auto-send OTP after registration (non-blocking)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
+    await supabase
+      .from("user_accounts")
+      .update({
+        otp_code: otp,
+        otp_expires: expires.toISOString(),
+      })
+      .eq("id", user.id);
+
+    sendOTPEmail({ name: user.name, email: user.email }, otp).catch(
+      console.error,
+    );
 
     const token = generateToken(user);
     res.status(201).json({ success: true, data: { user, token } });
@@ -187,12 +202,10 @@ export async function resetPassword(req, res) {
         .status(400)
         .json({ success: false, message: "Token and password are required" });
     if (password.length < 6)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Password must be at least 6 characters",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
 
     const { data: user, error } = await supabase
       .from("user_accounts")
@@ -276,12 +289,10 @@ export async function changePassword(req, res) {
         .status(400)
         .json({ success: false, message: "Both passwords are required" });
     if (new_password.length < 6)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "New password must be at least 6 characters",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 6 characters",
+      });
 
     const { data: user } = await supabase
       .from("user_accounts")
@@ -356,6 +367,221 @@ export async function deleteAccount(req, res) {
       .update({ is_active: false })
       .eq("id", req.user.id);
     res.json({ success: true, message: "Account deactivated successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+export async function googleAuth(req, res) {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Google credential is required" });
+    }
+
+    // Verify the Google token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Could not retrieve email from Google",
+      });
+    }
+
+    // Check if user already exists by google_id
+    let { data: existingUser } = await supabase
+      .from("user_accounts")
+      .select("*")
+      .eq("google_id", googleId)
+      .single();
+
+    // If not found by google_id, check by email
+    if (!existingUser) {
+      const { data: emailUser } = await supabase
+        .from("user_accounts")
+        .select("*")
+        .eq("email", email.toLowerCase())
+        .single();
+
+      if (emailUser) {
+        // Email exists — link Google to this account
+        const { data: updated } = await supabase
+          .from("user_accounts")
+          .update({
+            google_id: googleId,
+            avatar_url: picture,
+            auth_provider: "google",
+            last_login: new Date().toISOString(),
+          })
+          .eq("id", emailUser.id)
+          .select("id, name, email, phone, avatar_url, created_at")
+          .single();
+
+        const token = generateToken(updated);
+        return res.json({ success: true, data: { user: updated, token } });
+      }
+
+      // Brand new user — create account
+      const { data: newUser, error } = await supabase
+        .from("user_accounts")
+        .insert([
+          {
+            name: name || email.split("@")[0],
+            email: email.toLowerCase(),
+            google_id: googleId,
+            avatar_url: picture,
+            auth_provider: "google",
+            password: await bcrypt.hash(Math.random().toString(36), 12),
+            is_active: true,
+            last_login: new Date().toISOString(),
+          },
+        ])
+        .select("id, name, email, phone, avatar_url, created_at")
+        .single();
+
+      if (error) throw error;
+
+      const token = generateToken(newUser);
+      return res.json({
+        success: true,
+        data: { user: newUser, token },
+        isNewUser: true,
+      });
+    }
+
+    // Existing Google user — log them in
+    const { data: user } = await supabase
+      .from("user_accounts")
+      .update({ last_login: new Date().toISOString(), avatar_url: picture })
+      .eq("id", existingUser.id)
+      .select("id, name, email, phone, avatar_url, created_at")
+      .single();
+
+    const token = generateToken(user);
+    res.json({ success: true, data: { user, token } });
+  } catch (err) {
+    console.error("Google auth error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Google sign-in failed. Please try again.",
+    });
+  }
+}
+
+export async function sendOTP(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
+
+    const { data: user } = await supabase
+      .from("user_accounts")
+      .select("id, name, email, is_verified")
+      .eq("email", email.toLowerCase())
+      .single();
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found" });
+    if (user.is_verified)
+      return res
+        .status(400)
+        .json({ success: false, message: "Account is already verified" });
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await supabase
+      .from("user_accounts")
+      .update({
+        otp_code: otp,
+        otp_expires: expires.toISOString(),
+      })
+      .eq("id", user.id);
+
+    // Send OTP email
+    await sendOTPEmail({ name: user.name, email: user.email }, otp);
+
+    res.json({
+      success: true,
+      message: "Verification code sent to your email",
+    });
+  } catch (err) {
+    console.error("OTP send error:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+export async function verifyOTP(req, res) {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and OTP are required" });
+    }
+
+    const { data: user } = await supabase
+      .from("user_accounts")
+      .select("*")
+      .eq("email", email.toLowerCase())
+      .single();
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found" });
+    if (user.is_verified)
+      return res.json({ success: true, message: "Already verified" });
+    if (!user.otp_code)
+      return res.status(400).json({
+        success: false,
+        message: "No verification code found. Request a new one.",
+      });
+    if (new Date(user.otp_expires) < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: "Code has expired. Request a new one.",
+      });
+    }
+    if (user.otp_code !== otp.toString()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect code. Please try again." });
+    }
+
+    // Mark verified and clear OTP
+    await supabase
+      .from("user_accounts")
+      .update({
+        is_verified: true,
+        otp_code: null,
+        otp_expires: null,
+      })
+      .eq("id", user.id);
+
+    // Return fresh token
+    const { password: _, ...userWithoutPassword } = user;
+    const token = generateToken({ ...userWithoutPassword, is_verified: true });
+
+    res.json({
+      success: true,
+      message: "Email verified successfully!",
+      data: { user: { ...userWithoutPassword, is_verified: true }, token },
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

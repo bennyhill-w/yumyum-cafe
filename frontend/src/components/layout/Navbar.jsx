@@ -84,14 +84,13 @@ export default function Navbar() {
               <img
                 src={logoImg}
                 alt="Yum-Yum Cafe"
-                className="w-20 h-20 rounded-full object-cover flex-shrink-0"
+                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover flex-shrink-0"
               />
               <span className="font-display text-brand-red text-xl leading-tight hidden sm:block">
                 Yum-Yum Cafe
               </span>
             </Link>
 
-            {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map(({ to, label }) => (
                 <NavLink
@@ -116,7 +115,7 @@ export default function Navbar() {
               {/* Cart */}
               <Link
                 to="/order"
-                className="relative flex items-center gap-2 bg-brand-gold text-brand-gold-light px-4 py-2 rounded-lg text-sm font-bold hover:bg-brand-gold/90 transition-colors font-sans"
+                className="relative flex items-center gap-2 bg-brand-gold text-brand-gold-light px-2 sm:px-4 py-2 rounded-lg text-sm font-bold hover:bg-brand-gold/90 transition-colors font-sans"
               >
                 <ShoppingCart size={16} />
                 <span className="hidden sm:inline">Order Now</span>
@@ -129,7 +128,7 @@ export default function Navbar() {
 
               {/* User auth */}
               {isAuthenticated ? (
-                <div className="relative">
+                <div className="hidden lg:relative lg:flex">
                   <motion.button
                     onClick={() => setUserMenuOpen((v) => !v)}
                     whileHover={{ scale: 1.05 }}
@@ -160,7 +159,7 @@ export default function Navbar() {
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -8 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute right-0 top-full mt-2 w-52 bg-red rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20"
+                          className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20"
                         >
                           <div className="px-4 py-3 border-b border-gray-100">
                             <p className="font-bold text-gray-900 text-sm font-sans">
@@ -200,10 +199,10 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="hidden lg:flex items-center gap-2">
                   <button
                     onClick={() => openAuth("login")}
-                    className="text-white/80 hover:text-white text-sm font-semibold font-sans transition-colors px-3 py-2"
+                    className="text-gray-700 hover:text-brand-red text-sm font-semibold font-sans transition-colors px-3 py-2 rounded-lg hover:bg-brand-red-light"
                   >
                     Sign In
                   </button>
@@ -211,7 +210,7 @@ export default function Navbar() {
                     onClick={() => openAuth("register")}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-1.5 bg-white/15 border border-white/25 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-white/25 transition-colors font-sans"
+                    className="flex items-center gap-1.5 bg-brand-red text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-brand-red-dark transition-colors font-sans"
                   >
                     <User size={14} /> Register
                   </motion.button>
@@ -241,14 +240,14 @@ export default function Navbar() {
           onClick={() => setIsOpen(false)}
         />
         <div
-          className={`absolute top-0 left-0 h-full w-72 bg-brand-red shadow-2xl transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+          className={`absolute top-0 left-0 h-full w-full max-w-xs sm:w-72 bg-brand-red shadow-2xl transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/20">
             <Link to="/" className="flex items-center gap-2">
               <img
                 src={logoImg}
                 alt="Yum-Yum Cafe"
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover"
               />
               <span className="font-display text-white text-lg">
                 Yum-Yum Cafe

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { HiOutlineSparkles } from "react-icons/hi";
-import { GiCheckMark } from "react-icons/gi";
+import { IoFlameSharp } from "react-icons/io5";
+import { FiClock, FiUsers } from "react-icons/fi";
 
 export default function WhyUs() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
@@ -9,48 +10,69 @@ export default function WhyUs() {
   const features = [
     {
       title: "Fresh Daily",
-      text: "Ingredients sourced and prepared every morning.",
-      icon: <GiCheckMark size={18} />,
+      text: "Every dish is prepared fresh in each branch every morning. No reheating, no shortcuts — real food made with care.",
+      icon: <IoFlameSharp size={22} />,
     },
     {
       title: "Fast Service",
-      text: "Order online and pick up quickly or get speedy delivery.",
-      icon: <GiCheckMark size={18} />,
+      text: "Order online and pick up quickly. We have your food ready and waiting so you never have to wait long.",
+      icon: <FiClock size={22} />,
     },
     {
       title: "Trusted Quality",
-      text: "Trusted across Lagos with 5,000+ happy customers.",
-      icon: <GiCheckMark size={18} />,
+      text: "Trusted across Lagos with over 5,000 happy customers. Our reputation speaks for itself — come taste the difference.",
+      icon: <FiUsers size={22} />,
     },
   ];
 
   return (
     <section
       ref={ref}
-      className="py-24 bg-gray-50"
+      className="py-24 bg-brand-red relative overflow-hidden"
       aria-labelledby="whyus-heading"
     >
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      {/* Pattern overlay */}
+      <div className="absolute inset-0 bg-hero-pattern opacity-10 pointer-events-none" />
+
+      {/* Decorative blobs */}
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 8, repeat: Infinity }}
+        className="absolute top-0 right-0 w-96 h-96 rounded-full bg-white/5 blur-3xl pointer-events-none"
+      />
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="mb-14 text-center max-w-2xl mx-auto"
         >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-1 bg-brand-red rounded-full" />
-            <span className="text-brand-red text-sm font-bold uppercase tracking-widest font-sans flex items-center gap-1.5">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="w-6 h-0.5 rounded-full bg-yellow-300" />
+            <span className="text-yellow-300 text-sm font-bold uppercase tracking-widest font-sans flex items-center gap-1.5">
               <HiOutlineSparkles size={13} /> Why Choose Us
             </span>
+            <div className="w-6 h-0.5 rounded-full bg-yellow-300" />
           </div>
           <h2
             id="whyus-heading"
-            className="font-display font-bold text-gray-900 text-4xl sm:text-5xl"
+            className="font-display font-bold text-white text-4xl sm:text-5xl mb-4"
             style={{ letterSpacing: "-0.01em" }}
           >
-            Good Food, Great Moments
+            Good Food,{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #FEF3C7, #D97706)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Great Moments.
+            </span>
           </h2>
-          <p className="text-gray-400 text-base font-sans mt-2 max-w-sm">
+          <p className="text-white/65 text-lg font-sans leading-relaxed">
             We combine fresh ingredients, speedy service, and a welcoming
             atmosphere to make every meal special.
           </p>
@@ -60,18 +82,21 @@ export default function WhyUs() {
           {features.map((f, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm"
+              whileHover={{ y: -6 }}
+              className="bg-white/10 border border-white/15 backdrop-blur-sm rounded-3xl p-7 group hover:bg-white/15 transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-lg bg-brand-red-light text-brand-red flex items-center justify-center mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/15 group-hover:bg-white/25 flex items-center justify-center text-yellow-300 mb-5 transition-all duration-300">
                 {f.icon}
               </div>
-              <h3 className="font-display font-bold text-gray-900 text-lg mb-2">
+              <h3 className="font-display font-bold text-white text-xl mb-3">
                 {f.title}
               </h3>
-              <p className="text-gray-500 text-sm">{f.text}</p>
+              <p className="text-white/65 text-sm font-sans leading-relaxed">
+                {f.text}
+              </p>
             </motion.div>
           ))}
         </div>

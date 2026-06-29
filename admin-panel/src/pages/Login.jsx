@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { MdStorefront } from "react-icons/md";
+import logoImg from "../assets/logo.jpg";
 import { login } from "../services/authService";
 import useAuthStore from "../store/authStore";
 import toast from "react-hot-toast";
@@ -63,8 +63,12 @@ export default function Login() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-brand-red rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-glow-red">
-            <MdStorefront className="text-white" size={30} />
+          <div className="w-20 h-20 rounded-3xl overflow-hidden mx-auto mb-4 shadow-glow-red">
+            <img
+              src={logoImg}
+              alt="Yum-Yum Cafe Admin Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
           <h1 className="font-display font-extrabold text-gray-900 text-3xl mb-1">
             Admin Panel

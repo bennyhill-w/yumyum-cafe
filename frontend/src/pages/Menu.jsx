@@ -402,8 +402,8 @@ export default function Menu() {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10">
         {/* ── SEARCH + CART ROW ── */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-8">
+          <div className="relative flex-1 min-w-0 max-w-full">
             <FiSearch
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
               size={17}
@@ -447,8 +447,8 @@ export default function Menu() {
           </motion.button>
         </div>
 
-        {/* ── CATEGORY FILTER ── */}
-        <div className="flex gap-3 overflow-x-auto pb-3 mb-10 scrollbar-hide">
+        {/* ── CATEGORY FILTER — sticky below navbar while scrolling ── */}
+        <div className="sticky top-16 z-30 bg-gray-50/95 backdrop-blur-sm flex gap-3 overflow-x-auto pb-3 pt-3 mb-10 scrollbar-hide">
           {CATEGORIES.map((cat) => (
             <motion.button
               key={cat.id}
@@ -476,7 +476,7 @@ export default function Menu() {
         </div>
 
         {/* ── RESULTS COUNT ── */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
           <p className="text-gray-500 text-sm font-sans">
             Showing{" "}
             <span className="font-bold text-gray-900">{filtered.length}</span>{" "}

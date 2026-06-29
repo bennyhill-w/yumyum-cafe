@@ -129,6 +129,49 @@ export async function sendReservationConfirmation(reservation, branch) {
   }
 }
 
+export async function sendOTPEmail(user, otp) {
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: user.email,
+      subject: `${otp} is your Yum-Yum Cafe verification code`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;padding:0;background:#f9fafb;font-family:sans-serif;">
+          <div style="max-width:480px;margin:0 auto;padding:40px 20px;">
+            <div style="background:#B91C1C;border-radius:16px 16px 0 0;padding:32px;text-align:center;">
+              <h1 style="color:#fff;margin:0;font-size:24px;font-weight:800;">Yum-Yum Cafe</h1>
+              <p style="color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;">Email Verification</p>
+            </div>
+            <div style="background:#fff;border-radius:0 0 16px 16px;padding:32px;border:1px solid #f3f4f6;">
+              <h2 style="color:#111827;font-size:20px;margin:0 0 8px;">Hi ${user.name},</h2>
+              <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">
+                Use this code to verify your Yum-Yum Cafe account.
+                It expires in <strong>10 minutes.</strong>
+              </p>
+              <div style="background:#fef2f2;border:2px solid #fecaca;border-radius:16px;padding:24px;text-align:center;margin-bottom:24px;">
+                <p style="color:#9ca3af;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 8px;">
+                  Your verification code
+                </p>
+                <p style="color:#B91C1C;font-size:42px;font-weight:800;letter-spacing:0.3em;margin:0;font-family:monospace;">
+                  ${otp}
+                </p>
+              </div>
+              <p style="color:#9ca3af;font-size:13px;text-align:center;">
+                If you did not create a Yum-Yum Cafe account, you can safely ignore this email.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    });
+  } catch (err) {
+    console.error("OTP email error:", err);
+  }
+}
+
 // ── Contact form ──
 export async function sendContactEmail(contact) {
   try {
