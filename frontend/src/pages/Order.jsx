@@ -51,9 +51,9 @@ const CATEGORIES = [
 // ── STEP INDICATOR ──
 function StepIndicator({ current }) {
   return (
-    <div className="flex items-center justify-center mb-10">
+    <div className="flex items-center justify-center mb-6 sm:mb-10 overflow-x-auto">
       {STEPS.map((step, i) => (
-        <div key={step.id} className="flex items-center">
+        <div key={step.id} className="flex items-center flex-shrink-0">
           <div className="flex flex-col items-center">
             <motion.div
               animate={{
@@ -65,14 +65,14 @@ function StepIndicator({ current }) {
                       : "#F3F4F6",
                 scale: current === step.id ? 1.1 : 1,
               }}
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
                 current >= step.id ? "text-white" : "text-gray-400"
               }`}
             >
-              {current > step.id ? <FiCheck size={16} /> : step.id}
+              {current > step.id ? <FiCheck size={12} /> : step.id}
             </motion.div>
             <span
-              className={`text-xs mt-1.5 font-sans font-semibold hidden sm:block ${
+              className={`text-[10px] sm:text-xs mt-1 sm:mt-1.5 font-sans font-semibold hidden sm:block ${
                 current >= step.id ? "text-brand-red" : "text-gray-400"
               }`}
             >
@@ -81,7 +81,7 @@ function StepIndicator({ current }) {
           </div>
           {i < STEPS.length - 1 && (
             <div
-              className={`w-16 sm:w-24 h-[2px] mx-2 mb-5 rounded-full transition-all duration-500 ${
+              className={`w-8 sm:w-16 md:w-24 h-[2px] mx-1 sm:mx-2 mb-4 sm:mb-5 rounded-full transition-all duration-500 ${
                 current > step.id ? "bg-brand-red" : "bg-gray-200"
               }`}
             />
@@ -104,16 +104,16 @@ function BranchStep({ onSelect }) {
       exit={{ opacity: 0, x: -30 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="text-center mb-10">
-        <h2 className="font-display font-extrabold text-gray-900 text-3xl sm:text-4xl mb-3">
+      <div className="text-center mb-6 sm:mb-10">
+        <h2 className="font-display font-extrabold text-gray-900 text-2xl sm:text-4xl mb-2 sm:mb-3">
           Pick Your Branch
         </h2>
-        <p className="text-gray-500 font-sans text-base">
+        <p className="text-gray-500 font-sans text-sm sm:text-base">
           Choose the Yum-Yum Cafe closest to you
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 max-w-2xl mx-auto mb-8 sm:mb-10">
         {branchesLoading && (
           <div className="col-span-full flex items-center justify-center py-8">
             <Spinner size={36} className="text-brand-red" />
@@ -128,7 +128,7 @@ function BranchStep({ onSelect }) {
             transition={{ delay: i * 0.08 }}
             whileHover={{ y: -4 }}
             whileTap={{ scale: 0.98 }}
-            className={`relative text-left p-6 rounded-3xl border-2 transition-all duration-300 ${
+            className={`relative text-left p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 ${
               selected === branch.id
                 ? "border-brand-red bg-brand-red-light shadow-glow-red"
                 : "border-gray-200 bg-white hover:border-brand-red/40 shadow-sm hover:shadow-md"
@@ -138,13 +138,13 @@ function BranchStep({ onSelect }) {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute top-4 right-4 w-7 h-7 bg-brand-red rounded-full flex items-center justify-center"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-6 h-6 sm:w-7 sm:h-7 bg-brand-red rounded-full flex items-center justify-center"
               >
-                <FiCheck className="text-white" size={14} />
+                <FiCheck className="text-white" size={12} />
               </motion.div>
             )}
             <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 ${
                 selected === branch.id ? "bg-brand-red" : "bg-brand-red-light"
               }`}
             >
@@ -152,17 +152,17 @@ function BranchStep({ onSelect }) {
                 className={
                   selected === branch.id ? "text-white" : "text-brand-red"
                 }
-                size={20}
+                size={18}
               />
             </div>
             <h3
-              className={`font-display font-bold text-xl mb-1 ${
+              className={`font-display font-bold text-lg sm:text-xl mb-0.5 sm:mb-1 ${
                 selected === branch.id ? "text-brand-red" : "text-gray-900"
               }`}
             >
               {branch.name}
             </h3>
-            <p className="text-gray-500 text-sm font-sans leading-relaxed mb-3">
+            <p className="text-gray-500 text-xs sm:text-sm font-sans leading-relaxed mb-2 sm:mb-3">
               {branch.address}
             </p>
             <div className="flex items-center gap-1.5">
@@ -175,7 +175,7 @@ function BranchStep({ onSelect }) {
         ))}
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center px-4 sm:px-0">
         <motion.button
           onClick={() =>
             selected && onSelect(BRANCHES.find((b) => b.id === selected))
@@ -183,14 +183,14 @@ function BranchStep({ onSelect }) {
           disabled={!selected}
           whileHover={{ scale: selected ? 1.03 : 1 }}
           whileTap={{ scale: selected ? 0.97 : 1 }}
-          className={`inline-flex items-center gap-3 font-bold px-10 py-4 rounded-2xl text-base transition-all font-sans ${
+          className={`inline-flex items-center gap-2 sm:gap-3 font-bold px-6 sm:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base transition-all font-sans w-full sm:w-auto justify-center ${
             selected
               ? "bg-brand-red text-white hover:bg-brand-red-dark shadow-glow-red"
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
         >
           Continue to Menu
-          <FiArrowRight size={18} />
+          <FiArrowRight size={16} />
         </motion.button>
       </div>
     </motion.div>
@@ -246,37 +246,39 @@ function MenuStep({ branch, onBack, onNext }) {
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
         <div>
-          <h2 className="font-display font-extrabold text-gray-900 text-3xl mb-1">
+          <h2 className="font-display font-extrabold text-gray-900 text-2xl sm:text-3xl mb-1">
             Choose Your Dishes
           </h2>
           <div className="flex items-center gap-2 text-gray-500">
             <FiMapPin size={13} className="text-brand-red" />
-            <span className="text-sm font-sans">{branch.name} Branch</span>
+            <span className="text-xs sm:text-sm font-sans">
+              {branch.name} Branch
+            </span>
           </div>
         </div>
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-gray-400 hover:text-brand-red text-sm font-semibold font-sans transition-colors"
+          className="flex items-center gap-1.5 text-gray-400 hover:text-brand-red text-xs sm:text-sm font-semibold font-sans transition-colors whitespace-nowrap"
         >
-          <FiArrowLeft size={15} /> Change branch
+          <FiArrowLeft size={14} /> Change branch
         </button>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_340px] gap-8">
+      <div className="grid lg:grid-cols-[1fr_320px] gap-4 sm:gap-6 lg:gap-8">
         {/* Menu */}
-        <div>
+        <div className="min-w-0">
           {/* Category filter */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+          <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 mb-4 sm:mb-6 scrollbar-hide -mx-2 sm:-mx-1 px-2 sm:px-1">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all font-sans flex-shrink-0 ${
+                className={`px-2.5 sm:px-4 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all font-sans flex-shrink-0 ${
                   category === cat.id
-                    ? "bg-brand-red text-white shadow-sm"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-brand-red hover:text-brand-red"
+                    ? "bg-brand-red text-white shadow-glow-red"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {cat.label}
@@ -285,7 +287,7 @@ function MenuStep({ branch, onBack, onNext }) {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <AnimatePresence>
               {filtered.map((item) => {
                 const inCart = cartItem(item.id);
@@ -296,11 +298,11 @@ function MenuStep({ branch, onBack, onNext }) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group"
+                    className="flex items-center gap-3 sm:gap-4 bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group"
                   >
                     {/* Clickable image */}
                     <div
-                      className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 cursor-pointer"
+                      className="relative w-16 sm:w-20 h-16 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 cursor-pointer"
                       onClick={() => setSelectedItem(item)}
                     >
                       <img
@@ -327,38 +329,38 @@ function MenuStep({ branch, onBack, onNext }) {
 
                     <div className="flex-1 min-w-0">
                       <h4
-                        className="font-bold text-gray-900 text-sm leading-tight mb-0.5 font-sans truncate cursor-pointer hover:text-brand-red transition-colors"
+                        className="font-bold text-gray-900 text-xs sm:text-sm leading-tight mb-0.5 font-sans truncate cursor-pointer hover:text-brand-red transition-colors"
                         onClick={() => setSelectedItem(item)}
                       >
                         {item.name}
                       </h4>
-                      <p className="text-gray-400 text-xs font-sans line-clamp-1 mb-2">
+                      <p className="text-gray-400 text-[10px] sm:text-xs font-sans line-clamp-1 mb-1.5 sm:mb-2">
                         {item.description}
                       </p>
-                      <span className="font-display font-bold text-brand-red text-base">
+                      <span className="font-display font-bold text-brand-red text-sm sm:text-base">
                         {formatCurrency(item.price)}
                       </span>
                     </div>
 
                     <div className="flex-shrink-0">
                       {inCart ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                           <button
                             onClick={() =>
                               updateQuantity(item.id, inCart.quantity - 1)
                             }
-                            className="w-7 h-7 rounded-full bg-brand-red-light text-brand-red flex items-center justify-center font-bold text-base hover:bg-brand-red hover:text-white transition-colors"
+                            className="w-6 sm:w-7 h-6 sm:h-7 rounded-full bg-brand-red-light text-brand-red flex items-center justify-center font-bold text-xs sm:text-base hover:bg-brand-red hover:text-white transition-colors"
                           >
                             −
                           </button>
-                          <span className="w-5 text-center font-bold text-gray-900 text-sm font-sans">
+                          <span className="w-4 text-center font-bold text-gray-900 text-xs sm:text-sm font-sans">
                             {inCart.quantity}
                           </span>
                           <button
                             onClick={() =>
                               updateQuantity(item.id, inCart.quantity + 1)
                             }
-                            className="w-7 h-7 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-base hover:bg-brand-red-dark transition-colors"
+                            className="w-6 sm:w-7 h-6 sm:h-7 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs sm:text-base hover:bg-brand-red-dark transition-colors"
                           >
                             +
                           </button>
@@ -368,9 +370,9 @@ function MenuStep({ branch, onBack, onNext }) {
                           onClick={() => handleAdd(item)}
                           whileHover={{ scale: 1.08 }}
                           whileTap={{ scale: 0.95 }}
-                          className="w-9 h-9 rounded-full bg-brand-red-light text-brand-red flex items-center justify-center hover:bg-brand-red hover:text-white transition-colors"
+                          className="w-8 sm:w-9 h-8 sm:h-9 rounded-full bg-brand-red-light text-brand-red flex items-center justify-center hover:bg-brand-red hover:text-white transition-colors"
                         >
-                          <FiShoppingCart size={15} />
+                          <FiShoppingCart size={14} />
                         </motion.button>
                       )}
                     </div>
@@ -382,8 +384,8 @@ function MenuStep({ branch, onBack, onNext }) {
         </div>
 
         {/* Cart sidebar */}
-        <div className="lg:sticky lg:top-24 self-start">
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="lg:sticky lg:top-24 self-start order-last lg:order-none">
+          <div className="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-brand-red-light rounded-xl flex items-center justify-center">
@@ -572,16 +574,16 @@ function DetailsStep({ onBack, onNext }) {
       transition={{ duration: 0.4 }}
       className="max-w-2xl mx-auto"
     >
-      <div className="text-center mb-10">
-        <h2 className="font-display font-extrabold text-gray-900 text-3xl sm:text-4xl mb-3">
+      <div className="text-center mb-6 sm:mb-10">
+        <h2 className="font-display font-extrabold text-gray-900 text-2xl sm:text-4xl mb-2 sm:mb-3">
           Your Details
         </h2>
-        <p className="text-gray-500 font-sans">
+        <p className="text-gray-500 font-sans text-sm sm:text-base">
           So we know who to prepare your order for
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-7 sm:p-8">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-8">
         <div className="grid sm:grid-cols-2 gap-5 mb-5">
           {field("Full Name *", "name", "text", "e.g. Adaeze Okonkwo")}
           {field("Phone Number *", "phone", "tel", "e.g. 08012345678")}
@@ -660,18 +662,18 @@ function DetailsStep({ onBack, onNext }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-8">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 mt-6 sm:mt-8">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-500 hover:text-brand-red font-semibold text-sm font-sans transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-brand-red font-semibold text-xs sm:text-sm font-sans transition-colors"
         >
-          <FiArrowLeft size={16} /> Back to Menu
+          <FiArrowLeft size={14} /> Back to Menu
         </button>
         <motion.button
           onClick={handleSubmit}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="inline-flex items-center gap-2.5 bg-brand-red text-white font-bold px-10 py-4 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans shadow-glow-red"
+          className="inline-flex items-center justify-center gap-2 sm:gap-2.5 bg-brand-red text-white font-bold px-6 sm:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base hover:bg-brand-red-dark transition-colors font-sans shadow-glow-red w-full sm:w-auto"
         >
           Review Order <FiArrowRight size={16} />
         </motion.button>
@@ -700,113 +702,131 @@ function ConfirmStep({
       transition={{ duration: 0.4 }}
       className="max-w-2xl mx-auto"
     >
-      <div className="text-center mb-10">
-        <h2 className="font-display font-extrabold text-gray-900 text-3xl sm:text-4xl mb-3">
+      <div className="text-center mb-6 sm:mb-10">
+        <h2 className="font-display font-extrabold text-gray-900 text-2xl sm:text-4xl mb-2 sm:mb-3">
           Confirm Your Order
         </h2>
-        <p className="text-gray-500 font-sans">
+        <p className="text-gray-500 font-sans text-sm sm:text-base">
           Review everything before you place your order
         </p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4 sm:space-y-5">
         {/* Branch */}
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-9 h-9 bg-brand-red-light rounded-xl flex items-center justify-center">
-              <FiMapPin className="text-brand-red" size={16} />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-brand-red-light rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <FiMapPin className="text-brand-red" size={14} />
             </div>
-            <h3 className="font-bold text-gray-900 font-sans">Pickup Branch</h3>
+            <h3 className="font-bold text-sm sm:text-base text-gray-900 font-sans">
+              Pickup Branch
+            </h3>
           </div>
-          <p className="text-gray-600 text-sm font-sans ml-12">
+          <p className="text-gray-600 text-xs sm:text-sm font-sans ml-10 sm:ml-12">
             {branch.name} — {branch.address}
           </p>
-          <p className="text-gray-400 text-xs font-sans ml-12 mt-1">
+          <p className="text-gray-400 text-[10px] sm:text-xs font-sans ml-10 sm:ml-12 mt-1">
             {branch.hours}
           </p>
         </div>
 
         {/* Items */}
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-9 h-9 bg-brand-red-light rounded-xl flex items-center justify-center">
-              <FiShoppingCart className="text-brand-red" size={16} />
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-4 sm:p-6">
+          <div className="flex items-center gap-3 mb-4 sm:mb-5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-brand-red-light rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <FiShoppingCart className="text-brand-red" size={14} />
             </div>
-            <h3 className="font-bold text-gray-900 font-sans">Order Summary</h3>
+            <h3 className="font-bold text-sm sm:text-base text-gray-900 font-sans">
+              Order Summary
+            </h3>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center gap-4">
+              <div key={item.id} className="flex items-center gap-3 sm:gap-4">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0"
                 />
-                <div className="flex-1">
-                  <p className="font-bold text-gray-900 text-sm font-sans">
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900 text-xs sm:text-sm font-sans mb-0.5 sm:mb-1 truncate">
                     {item.name}
                   </p>
-                  <p className="text-gray-400 text-xs font-sans">
-                    Qty: {item.quantity}
+                  <p className="text-gray-500 text-xs font-sans">
+                    {item.quantity}x {formatCurrency(item.price)}
                   </p>
                 </div>
-                <span className="font-bold text-brand-red font-sans text-sm">
-                  {formatCurrency(item.price * item.quantity)}
-                </span>
+                <div className="text-right">
+                  <p className="font-bold text-gray-900 text-xs sm:text-sm font-sans">
+                    {formatCurrency(item.price * item.quantity)}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-          <div className="border-t border-gray-100 mt-5 pt-5 flex items-center justify-between">
-            <span className="text-gray-500 font-sans text-sm">
+          <div className="border-t border-gray-100 mt-4 sm:mt-5 pt-4 sm:pt-5 flex items-center justify-between">
+            <span className="text-gray-500 font-sans text-xs sm:text-sm">
               Total Amount
             </span>
-            <span className="font-display font-extrabold text-gray-900 text-2xl">
+            <span className="font-display font-extrabold text-gray-900 text-xl sm:text-2xl">
               {formatCurrency(total)}
             </span>
           </div>
         </div>
 
         {/* Customer details */}
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 bg-brand-red-light rounded-xl flex items-center justify-center">
-              <TbChefHat className="text-brand-red" size={16} />
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-4 sm:p-6">
+          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-brand-red-light rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <TbChefHat className="text-brand-red" size={14} />
             </div>
-            <h3 className="font-bold text-gray-900 font-sans">Your Details</h3>
+            <h3 className="font-bold text-sm sm:text-base text-gray-900 font-sans">
+              Your Details
+            </h3>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3 text-sm">
+          <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
             <div>
-              <span className="text-gray-400 font-sans">Name</span>
-              <p className="font-semibold text-gray-900 font-sans">
+              <span className="text-gray-400 font-sans text-xs sm:text-xs">
+                Name
+              </span>
+              <p className="font-semibold text-gray-900 font-sans text-sm sm:text-base">
                 {customerDetails.name}
               </p>
             </div>
             <div>
-              <span className="text-gray-400 font-sans">Phone</span>
-              <p className="font-semibold text-gray-900 font-sans">
+              <span className="text-gray-400 font-sans text-xs sm:text-xs">
+                Phone
+              </span>
+              <p className="font-semibold text-gray-900 font-sans text-sm sm:text-base">
                 {customerDetails.phone}
               </p>
             </div>
             {customerDetails.email && (
               <div>
-                <span className="text-gray-400 font-sans">Email</span>
-                <p className="font-semibold text-gray-900 font-sans">
+                <span className="text-gray-400 font-sans text-xs sm:text-xs">
+                  Email
+                </span>
+                <p className="font-semibold text-gray-900 font-sans text-sm sm:text-base">
                   {customerDetails.email}
                 </p>
               </div>
             )}
             <div>
-              <span className="text-gray-400 font-sans">Payment</span>
-              <p className="font-semibold text-gray-900 font-sans capitalize">
-                {customerDetails.paymentMethod === "pickup"
-                  ? "Pay on Pickup"
-                  : "Pay Online (Paystack)"}
+              <span className="text-gray-400 font-sans text-xs sm:text-xs">
+                Payment
+              </span>
+              <p className="font-semibold text-gray-900 font-sans text-sm sm:text-base capitalize">
+                {customerDetails.paymentMethod === "online"
+                  ? "Online (Paystack)"
+                  : "Pickup Payment"}
               </p>
             </div>
             {customerDetails.notes && (
               <div className="sm:col-span-2">
-                <span className="text-gray-400 font-sans">Notes</span>
-                <p className="font-semibold text-gray-900 font-sans">
+                <span className="text-gray-400 font-sans text-xs sm:text-xs">
+                  Notes
+                </span>
+                <p className="font-semibold text-gray-900 font-sans text-sm sm:text-base">
                   {customerDetails.notes}
                 </p>
               </div>
@@ -815,19 +835,19 @@ function ConfirmStep({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-8">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 mt-6 sm:mt-8">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-500 hover:text-brand-red font-semibold text-sm font-sans transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-brand-red font-semibold text-xs sm:text-sm font-sans transition-colors"
         >
-          <FiArrowLeft size={16} /> Edit Details
+          <FiArrowLeft size={14} /> Edit Details
         </button>
         <motion.button
           onClick={onPlaceOrder}
           disabled={placing}
           whileHover={{ scale: placing ? 1 : 1.03 }}
           whileTap={{ scale: placing ? 1 : 0.97 }}
-          className="inline-flex items-center gap-2.5 bg-brand-red text-white font-bold px-10 py-4 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans shadow-glow-red disabled:opacity-70"
+          className="inline-flex items-center justify-center gap-2 sm:gap-2.5 bg-brand-red text-white font-bold px-6 sm:px-10 py-3 sm:py-4 rounded-2xl text-sm sm:text-base hover:bg-brand-red-dark transition-colors font-sans shadow-glow-red disabled:opacity-70 w-full sm:w-auto"
         >
           {placing ? (
             <>
@@ -836,13 +856,14 @@ function ConfirmStep({
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
               />
-              Placing Order...
+              <span className="hidden sm:inline">Placing Order...</span>
+              <span className="sm:hidden">Placing...</span>
             </>
           ) : (
             <>
-              <MdOutlineDeliveryDining size={20} />
+              <MdOutlineDeliveryDining size={18} />
               {customerDetails.paymentMethod === "online"
-                ? `Pay ${formatCurrency(total)}`
+                ? "Pay Now"
                 : "Place Order"}
             </>
           )}
@@ -865,26 +886,26 @@ function SuccessStep({ branch, customerDetails, order }) {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-        className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-8"
+        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6 sm:mb-8"
       >
-        <FiCheck className="text-green-500" size={40} />
+        <FiCheck className="text-green-500" size={32} />
       </motion.div>
-      <h2 className="font-display font-extrabold text-gray-900 text-4xl mb-4">
+      <h2 className="font-display font-extrabold text-gray-900 text-3xl sm:text-4xl mb-3 sm:mb-4">
         Order Placed!
       </h2>
-      <p className="text-gray-500 font-sans text-lg leading-relaxed mb-8">
+      <p className="text-gray-500 font-sans text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 px-2">
         Your order has been received by our{" "}
         <span className="text-brand-red font-bold">{branch.name}</span> branch.
         We are preparing it fresh for you right now!
       </p>
-      <div className="bg-brand-red-light rounded-3xl p-6 text-left mb-8">
-        <div className="flex items-center gap-2 mb-3">
-          <HiOutlineSparkles className="text-brand-red" size={16} />
-          <span className="font-bold text-brand-red font-sans text-sm">
+      <div className="bg-brand-red-light rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-left mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+          <HiOutlineSparkles className="text-brand-red" size={14} />
+          <span className="font-bold text-brand-red font-sans text-xs sm:text-sm">
             What happens next?
           </span>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1.5 sm:space-y-2">
           {[
             "Our team receives your order instantly",
             "Your food is freshly prepared",
@@ -892,39 +913,45 @@ function SuccessStep({ branch, customerDetails, order }) {
               ? "Come to the branch and pay on collection"
               : "Payment confirmed — just come collect",
           ].map((s, i) => (
-            <div key={i} className="flex items-center gap-2.5">
-              <div className="w-5 h-5 rounded-full bg-brand-red flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-[10px] font-bold font-sans">
-                  {i + 1}
+            <div key={i} className="flex items-center gap-2 sm:gap-2.5">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-brand-red flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[8px] sm:text-[9px] font-bold font-sans">
+                  ✓
                 </span>
               </div>
-              <span className="text-gray-700 text-sm font-sans">{s}</span>
+              <span className="text-gray-700 text-xs sm:text-sm font-sans">
+                {s}
+              </span>
             </div>
           ))}
         </div>
       </div>
       {order && (
-        <div className="bg-white rounded-2xl p-4 mb-6 text-center">
-          <p className="text-gray-500 text-sm font-sans">Order Number</p>
-          <p className="font-bold text-lg mb-3">#{order.order_number}</p>
+        <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 text-center">
+          <p className="text-gray-500 text-xs sm:text-sm font-sans">
+            Order Number
+          </p>
+          <p className="font-bold text-base sm:text-lg mb-2 sm:mb-3">
+            #{order.order_number}
+          </p>
           <Link
             to={`/order-tracking/${order.order_number}`}
-            className="inline-flex items-center justify-center gap-2 bg-brand-red text-white font-bold px-6 py-2 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans"
+            className="inline-flex items-center justify-center gap-2 bg-brand-red text-white font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm hover:bg-brand-red-dark transition-colors font-sans"
           >
             Track My Order
           </Link>
         </div>
       )}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center px-4 sm:px-0">
         <a
           href="/"
-          className="inline-flex items-center justify-center gap-2 bg-brand-red text-white font-bold px-8 py-4 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans"
+          className="inline-flex items-center justify-center gap-2 bg-brand-red text-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans"
         >
           Back to Home
         </a>
         <a
           href="/menu"
-          className="inline-flex items-center justify-center gap-2 bg-brand-red-light text-brand-red font-bold px-8 py-4 rounded-2xl text-sm hover:bg-brand-red hover:text-white transition-colors font-sans"
+          className="inline-flex items-center justify-center gap-2 bg-brand-red-light text-brand-red font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl text-sm hover:bg-brand-red hover:text-white transition-colors font-sans"
         >
           Order Again
         </a>
@@ -1045,23 +1072,20 @@ export default function Order() {
       {/* Page header */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />
-        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-12 sm:py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-10 sm:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-2 mb-3">
-              <MdOutlineDeliveryDining
-                className="text-brand-gold-mid"
-                size={18}
-              />
-              <span className="text-white/70 text-sm font-semibold uppercase tracking-widest font-sans">
-                Order Online
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <MdOutlineDeliveryDining className="text-white/80" size={16} />
+              <span className="text-white/70 text-xs sm:text-sm font-semibold uppercase tracking-widest font-sans">
+                FOOD DELIVERY
               </span>
             </div>
             <h1
-              className="font-display font-extrabold text-white text-4xl sm:text-5xl"
+              className="font-display font-extrabold text-white text-3xl sm:text-5xl"
               style={{ letterSpacing: "-0.02em" }}
             >
               Order Fresh Food
@@ -1079,7 +1103,7 @@ export default function Order() {
         </svg>
       </div>
 
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
         {!success && <StepIndicator current={step} />}
 
         <AnimatePresence mode="wait">
