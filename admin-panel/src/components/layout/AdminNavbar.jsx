@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { FiMenu, FiBell } from "react-icons/fi";
 import useAuthStore from "../../store/authStore";
-import logoImg from "../../assets/logo.jpg";
+import logoImg from "../../assets/logo.svg";
 
 const PAGE_TITLES = {
   "/orders": "Orders",
