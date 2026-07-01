@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import logoImg from "../assets/logo.svg";
+import logoImg from "../assets/logo.jpg";
 import { login } from "../services/authService";
 import useAuthStore from "../store/authStore";
 import toast from "react-hot-toast";

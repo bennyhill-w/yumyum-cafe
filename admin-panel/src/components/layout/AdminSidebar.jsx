@@ -1,6 +1,6 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "../../assets/logo.svg";
+import logoImg from "../../assets/logo.jpg";
 import {
   FiShoppingCart,
   FiCalendar,

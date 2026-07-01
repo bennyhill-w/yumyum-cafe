@@ -31,6 +31,7 @@ sPLASH.PNG
 *.jpeg
 *.png
 !frontend/src/assets/logo.jpg
+!admin-panel/src/assets/logo.jpg
 !frontend/src/assets/branch-baruwa.jpg
 !frontend/src/assets/Burger.png
 !frontend/src/assets/Food.png
