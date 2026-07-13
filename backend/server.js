@@ -25,6 +25,8 @@ const corsOptions = {
     "http://127.0.0.1:4174",
     "http://localhost:5174",
     "http://localhost:5176",
+    "https://yumyum-cafe.vercel.app",
+    "https://yumyum-cafe-ftmy.vercel.app",
   ],
   credentials: true,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
