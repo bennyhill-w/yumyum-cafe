@@ -14,5 +14,5 @@ export const RESERVATION_STATUSES = {
   cancelled: { label: "Cancelled", color: "bg-gray-100 text-gray-600" },
 };
 
-// Branch list is now fetched from the API in the admin pages
-export const BRANCHES = [];
+// Branch list (static for admin panel)
+export const BRANCHES = ["baruwa", "ijegun", "idimu", "abulegba"];
