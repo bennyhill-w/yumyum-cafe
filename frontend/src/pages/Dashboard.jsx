@@ -12,6 +12,8 @@ import {
   FiCheck,
   FiX,
   FiLock,
+  FiGift,
+  FiTrendingUp,
 } from "react-icons/fi";
 import { MdOutlineDeliveryDining, MdStorefront } from "react-icons/md";
 import { HiOutlineSparkles } from "react-icons/hi";
@@ -22,6 +24,8 @@ import {
   getUserReservations,
   updateProfile,
   changePassword,
+  getLoyaltyAccount,
+  getLoyaltyTransactions,
 } from "../services/userService";
 import useUserStore from "../store/userStore";
 import { formatCurrency } from "../utils/formatCurrency";
@@ -32,6 +36,7 @@ const TABS = [
   { id: "overview", label: "Overview", icon: <HiOutlineSparkles size={16} /> },
   { id: "orders", label: "My Orders", icon: <FiShoppingCart size={16} /> },
   { id: "reservations", label: "Reservations", icon: <FiCalendar size={16} /> },
+  { id: "loyalty", label: "Loyalty Points", icon: <AiFillStar size={16} /> },
   { id: "profile", label: "Profile", icon: <FiUser size={16} /> },
 ];
 
@@ -66,8 +71,21 @@ export default function Dashboard() {
     queryFn: () => getUserReservations().then((r) => r.data),
   });
 
+  const { data: loyaltyData } = useQuery({
+    queryKey: ["user-loyalty"],
+    queryFn: () => getLoyaltyAccount().then((r) => r.data),
+  });
+
+  const { data: transactionsData } = useQuery({
+    queryKey: ["user-loyalty-transactions"],
+    queryFn: () => getLoyaltyTransactions().then((r) => r.data),
+    enabled: tab === "loyalty",
+  });
+
   const orders = ordersData?.data || [];
   const reservations = reservationsData?.data || [];
+  const loyaltyAccount = loyaltyData?.data;
+  const transactions = transactionsData?.data || [];
 
   const handleLogout = () => {
     clearAuth();
@@ -140,6 +158,11 @@ export default function Dashboard() {
                 ).length,
                 label: "Active Orders",
               },
+              {
+                icon: <AiFillStar size={14} />,
+                val: loyaltyAccount?.points_balance || 0,
+                label: "Loyalty Points",
+              },
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center text-brand-gold-mid">
@@ -211,6 +234,12 @@ export default function Dashboard() {
               {tab === "orders" && <OrdersTab orders={orders} />}
               {tab === "reservations" && (
                 <ReservationsTab reservations={reservations} />
+              )}
+              {tab === "loyalty" && (
+                <LoyaltyTab
+                  account={loyaltyAccount}
+                  transactions={transactions}
+                />
               )}
               {tab === "profile" && (
                 <ProfileTab user={user} updateUser={updateUser} />
@@ -358,6 +387,234 @@ function OverviewTab({ orders, reservations, setTab }) {
             </motion.div>
           </Link>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ── LOYALTY TAB ──
+function LoyaltyTab({ account, transactions }) {
+  const pointsBalance = account?.points_balance || 0;
+  const lifetimePoints = account?.lifetime_points || 0;
+  const pointsToNextReward = 100 - (pointsBalance % 100);
+  const rewardsAvailable = Math.floor(pointsBalance / 100);
+  const progressPercent = ((pointsBalance % 100) / 100) * 100;
+
+  const TRANSACTION_ICONS = {
+    earned: {
+      icon: <AiFillStar size={14} />,
+      color: "text-green-600 bg-green-50",
+    },
+    redeemed: {
+      icon: <FiGift size={14} />,
+      color: "text-brand-red bg-brand-red-light",
+    },
+    bonus: {
+      icon: <HiOutlineSparkles size={14} />,
+      color: "text-yellow-600 bg-yellow-50",
+    },
+    refunded: {
+      icon: <FiTrendingUp size={14} />,
+      color: "text-blue-600 bg-blue-50",
+    },
+    manual_adjustment: {
+      icon: <FiCheck size={14} />,
+      color: "text-gray-600 bg-gray-100",
+    },
+    expired: { icon: <FiX size={14} />, color: "text-gray-400 bg-gray-100" },
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="bg-brand-red rounded-3xl p-7 relative overflow-hidden">
+        <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 6, repeat: Infinity }}
+          className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5 blur-2xl"
+        />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-4">
+            <AiFillStar className="text-yellow-300" size={18} />
+            <span className="text-white/75 text-sm font-bold font-sans uppercase tracking-widest">
+              Loyalty Points
+            </span>
+          </div>
+          <div className="flex items-end gap-4 mb-2">
+            <span
+              className="font-display font-bold text-white"
+              style={{ fontSize: "clamp(48px, 8vw, 72px)", lineHeight: 1 }}
+            >
+              {pointsBalance.toLocaleString()}
+            </span>
+            <span className="text-white/60 text-lg font-sans pb-2">pts</span>
+          </div>
+          <p className="text-white/60 text-sm font-sans mb-6">
+            {lifetimePoints.toLocaleString()} total points earned all time
+          </p>
+
+          <div className="bg-white/10 rounded-2xl p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-white text-sm font-bold font-sans">
+                Next ₦500 reward
+              </span>
+              <span className="text-yellow-300 text-sm font-bold font-sans">
+                {pointsToNextReward === 100
+                  ? "Ready!"
+                  : `${pointsToNextReward} pts away`}
+              </span>
+            </div>
+            <div className="w-full h-2.5 bg-white/20 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="h-full rounded-full bg-yellow-300"
+              />
+            </div>
+            <div className="flex justify-between mt-2">
+              <span className="text-white/40 text-xs font-sans">0</span>
+              <span className="text-white/40 text-xs font-sans">100 pts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+          <div className="w-11 h-11 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <FiGift className="text-green-600" size={20} />
+          </div>
+          <p className="font-display font-bold text-gray-900 text-2xl">
+            {rewardsAvailable}
+          </p>
+          <p className="text-gray-400 text-xs font-sans mt-0.5">
+            Rewards available
+          </p>
+          <p className="text-green-600 text-xs font-bold font-sans mt-1">
+            ₦{(rewardsAvailable * 500).toLocaleString()} in discounts
+          </p>
+        </div>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+          <div className="w-11 h-11 bg-brand-red-light rounded-xl flex items-center justify-center mx-auto mb-3">
+            <AiFillStar className="text-brand-red" size={20} />
+          </div>
+          <p className="font-display font-bold text-gray-900 text-2xl">
+            {lifetimePoints.toLocaleString()}
+          </p>
+          <p className="text-gray-400 text-xs font-sans mt-0.5">
+            Lifetime points
+          </p>
+          <p className="text-brand-red text-xs font-bold font-sans mt-1">
+            All time earned
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+        <h3 className="font-display font-bold text-gray-900 text-lg mb-4">
+          How to Earn Points
+        </h3>
+        <div className="space-y-3">
+          {[
+            {
+              icon: <MdOutlineDeliveryDining size={18} />,
+              title: "Place an order",
+              desc: "Earn 1 point for every ₦100 spent on direct orders",
+              color: "bg-brand-red-light text-brand-red",
+            },
+            {
+              icon: <HiOutlineSparkles size={18} />,
+              title: "First order bonus",
+              desc: "Get 20 bonus points when you complete your first order",
+              color: "bg-yellow-50 text-yellow-600",
+            },
+            {
+              icon: <FiGift size={18} />,
+              title: "Redeem rewards",
+              desc: "100 points = ₦500 discount on your next order",
+              color: "bg-green-50 text-green-600",
+            },
+          ].map((item) => (
+            <div key={item.title} className="flex items-start gap-3">
+              <div
+                className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}
+              >
+                {item.icon}
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 text-sm font-sans">
+                  {item.title}
+                </p>
+                <p className="text-gray-400 text-xs font-sans">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {rewardsAvailable > 0 && (
+          <Link to="/order" className="block mt-5">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full flex items-center justify-center gap-2.5 bg-brand-red text-white font-bold py-3.5 rounded-2xl text-sm hover:bg-brand-red-dark transition-colors font-sans"
+            >
+              <FiGift size={16} />
+              Use {rewardsAvailable * 100} points → Get ₦
+              {(rewardsAvailable * 500).toLocaleString()} off
+            </motion.button>
+          </Link>
+        )}
+      </div>
+
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100">
+          <h3 className="font-display font-bold text-gray-900 text-lg">
+            Points History
+          </h3>
+        </div>
+        {transactions.length === 0 ? (
+          <div className="p-10 text-center">
+            <AiFillStar className="text-gray-200 mx-auto mb-3" size={36} />
+            <p className="text-gray-400 text-sm font-sans">
+              No transactions yet
+            </p>
+            <p className="text-gray-300 text-xs font-sans mt-1">
+              Place your first order to start earning points
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {transactions.map((tx) => {
+              const style =
+                TRANSACTION_ICONS[tx.type] || TRANSACTION_ICONS.earned;
+              const isPositive = tx.points > 0;
+              return (
+                <div key={tx.id} className="flex items-center gap-4 px-6 py-4">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${style.color}`}
+                  >
+                    {style.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-900 text-sm font-sans leading-tight">
+                      {tx.description}
+                    </p>
+                    <p className="text-gray-400 text-xs font-sans mt-0.5">
+                      {format(new Date(tx.created_at), "MMM dd, yyyy · h:mm a")}
+                    </p>
+                  </div>
+                  <span
+                    className={`font-bold text-sm font-sans flex-shrink-0 ${isPositive ? "text-green-600" : "text-brand-red"}`}
+                  >
+                    {isPositive ? "+" : ""}
+                    {tx.points} pts
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

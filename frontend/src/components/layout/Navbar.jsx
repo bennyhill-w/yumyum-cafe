@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   ShoppingCart,
   Menu,
@@ -10,11 +11,13 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AiFillStar } from "react-icons/ai";
 import useCartStore from "../../store/cartStore";
 import useUserStore from "../../store/userStore";
 import AuthModal from "../ui/AuthModal";
 import toast from "react-hot-toast";
 import logoImg from "../../assets/logo.jpg";
+import { getLoyaltyAccount } from "../../services/userService";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -36,6 +39,14 @@ export default function Navbar() {
   const getTotalItems = useCartStore((s) => s.getTotalItems);
   const totalItems = getTotalItems();
   const { user, isAuthenticated, clearAuth } = useUserStore();
+
+  const { data: loyaltyData } = useQuery({
+    queryKey: ["loyalty-nav"],
+    queryFn: () => getLoyaltyAccount().then((r) => r.data),
+    enabled: isAuthenticated,
+    staleTime: 1000 * 60,
+  });
+  const pointsBalance = loyaltyData?.data?.points_balance || 0;
 
   useEffect(() => {
     setIsOpen(false);
@@ -142,6 +153,12 @@ export default function Navbar() {
                     <span className="hidden sm:block text-sm font-semibold font-sans max-w-20 truncate">
                       {user?.name?.split(" ")[0]}
                     </span>
+                    {pointsBalance >= 100 && (
+                      <span className="hidden sm:flex items-center gap-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans flex-shrink-0">
+                        <AiFillStar size={9} />
+                        {pointsBalance}
+                      </span>
+                    )}
                   </motion.button>
 
                   <AnimatePresence>
@@ -168,6 +185,17 @@ export default function Navbar() {
                             <p className="text-gray-400 text-xs font-sans truncate">
                               {user?.email}
                             </p>
+                            {pointsBalance > 0 && (
+                              <div className="flex items-center gap-1.5 mt-1.5 bg-yellow-50 rounded-lg px-2 py-1">
+                                <AiFillStar
+                                  className="text-yellow-500"
+                                  size={11}
+                                />
+                                <span className="text-yellow-700 text-xs font-bold font-sans">
+                                  {pointsBalance} loyalty points
+                                </span>
+                              </div>
+                            )}
                           </div>
                           <div className="p-2">
                             <Link

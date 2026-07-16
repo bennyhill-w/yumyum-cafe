@@ -28,6 +28,7 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 import { createOrder } from "../services/orderService";
 import { getMenuByBranch } from "../services/menuService";
+import { getLoyaltyAccount } from "../services/userService";
 import MenuItemModal from "../components/menu/MenuItemModal";
 
 const STEPS = [
@@ -514,6 +515,21 @@ function DetailsStep({ onBack, onNext }) {
     paymentMethod: "pickup",
   });
   const [errors, setErrors] = useState({});
+  const [usePoints, setUsePoints] = useState(false);
+  const [pointsToUse, setPointsToUse] = useState(100);
+
+  const { data: loyaltyData } = useQuery({
+    queryKey: ["loyalty-checkout"],
+    queryFn: () => getLoyaltyAccount().then((r) => r.data),
+    enabled: isAuthenticated,
+  });
+
+  const pointsBalance = loyaltyData?.data?.points_balance || 0;
+  const maxRedeemable = Math.min(
+    Math.floor(pointsBalance / 100) * 100,
+    1000, // cap at 1000 points = ₦5,000 max discount per order
+  );
+  const pointsDiscount = usePoints ? (pointsToUse / 100) * 500 : 0;
 
   const set = (k, v) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -537,7 +553,11 @@ function DetailsStep({ onBack, onNext }) {
       setErrors(e);
       return;
     }
-    onNext(form);
+    onNext({
+      ...form,
+      pointsToRedeem: usePoints ? pointsToUse : 0,
+      loyaltyDiscount: usePoints ? pointsDiscount : 0,
+    });
   };
 
   const field = (label, key, type = "text", placeholder = "") => (
@@ -607,6 +627,95 @@ function DetailsStep({ onBack, onNext }) {
             className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 bg-white text-sm font-sans text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all resize-none"
           />
         </div>
+
+        {/* Loyalty points redemption */}
+        {isAuthenticated && pointsBalance >= 100 && (
+          <div className="mt-5">
+            <div
+              onClick={() => setUsePoints((v) => !v)}
+              className={`flex items-start gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                usePoints
+                  ? "border-yellow-400 bg-yellow-50"
+                  : "border-gray-200 bg-white hover:border-yellow-300"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+                  usePoints ? "bg-yellow-400" : "bg-gray-200"
+                }`}
+              >
+                {usePoints && <FiCheck className="text-white" size={12} />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <AiFillStar className="text-yellow-500" size={14} />
+                  <p
+                    className={`text-sm font-bold font-sans ${usePoints ? "text-yellow-700" : "text-gray-700"}`}
+                  >
+                    Use Loyalty Points
+                  </p>
+                </div>
+                <p className="text-gray-400 text-xs font-sans mt-0.5">
+                  You have{" "}
+                  <span className="font-bold text-yellow-600">
+                    {pointsBalance} points
+                  </span>{" "}
+                  — use 100 pts for ₦500 off
+                </p>
+              </div>
+            </div>
+
+            {usePoints && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-3 bg-yellow-50 border border-yellow-200 rounded-2xl p-4"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-yellow-700 text-sm font-bold font-sans">
+                    Points to use
+                  </span>
+                  <span className="text-yellow-700 text-sm font-bold font-sans">
+                    ₦{pointsDiscount.toLocaleString()} off
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPointsToUse((v) => Math.max(100, v - 100))
+                    }
+                    className="w-8 h-8 rounded-full bg-yellow-200 text-yellow-700 font-bold flex items-center justify-center hover:bg-yellow-300 transition-colors flex-shrink-0"
+                  >
+                    −
+                  </button>
+                  <div className="flex-1 text-center">
+                    <span className="font-display font-bold text-yellow-700 text-xl">
+                      {pointsToUse}
+                    </span>
+                    <span className="text-yellow-500 text-xs font-sans ml-1">
+                      pts
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPointsToUse((v) => Math.min(maxRedeemable, v + 100))
+                    }
+                    className="w-8 h-8 rounded-full bg-yellow-200 text-yellow-700 font-bold flex items-center justify-center hover:bg-yellow-300 transition-colors flex-shrink-0"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="text-yellow-600 text-xs font-sans text-center mt-2">
+                  Max: {maxRedeemable} pts (₦
+                  {((maxRedeemable / 100) * 500).toLocaleString()} off)
+                </p>
+              </motion.div>
+            )}
+          </div>
+        )}
 
         {/* Payment method */}
         <div className="mt-6">
@@ -764,12 +873,23 @@ function ConfirmStep({
               </div>
             ))}
           </div>
-          <div className="border-t border-gray-100 mt-4 sm:mt-5 pt-4 sm:pt-5 flex items-center justify-between">
+          {customerDetails.loyaltyDiscount > 0 && (
+            <div className="flex items-center justify-between py-2 text-green-600">
+              <span className="font-sans text-xs sm:text-sm flex items-center gap-1.5">
+                <AiFillStar size={13} />
+                Loyalty discount ({customerDetails.pointsToRedeem} pts)
+              </span>
+              <span className="font-bold text-sm">
+                −{formatCurrency(customerDetails.loyaltyDiscount)}
+              </span>
+            </div>
+          )}
+          <div className="border-t border-gray-100 mt-2 pt-4 sm:pt-5 flex items-center justify-between">
             <span className="text-gray-500 font-sans text-xs sm:text-sm">
               Total Amount
             </span>
             <span className="font-display font-extrabold text-gray-900 text-xl sm:text-2xl">
-              {formatCurrency(total)}
+              {formatCurrency(total - (customerDetails.loyaltyDiscount || 0))}
             </span>
           </div>
         </div>
@@ -1053,10 +1173,24 @@ export default function Order() {
         return;
       }
 
+      // If user chose to redeem points, call the redemption endpoint
+      if (customerDetails.pointsToRedeem > 0 && order?.id) {
+        api
+          .post("/loyalty/redeem", {
+            order_id: order.id,
+            points_to_use: customerDetails.pointsToRedeem,
+          })
+          .catch(console.error);
+      }
+
       clearCart();
       setPlacedOrder(order);
       setSuccess(true);
-      toast.success("Order placed successfully!");
+      toast.success(
+        customerDetails.pointsToRedeem > 0
+          ? `Order placed! ${customerDetails.pointsToRedeem} points redeemed for ₦${customerDetails.loyaltyDiscount?.toLocaleString()} off!`
+          : "Order placed successfully!",
+      );
     } catch (err) {
       const msg =
         err.response?.data?.message ||
