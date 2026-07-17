@@ -1,6 +1,6 @@
 import supabase from "../services/supabase.js";
 
-const POINTS_PER_NAIRA = 0.01; // ₦100 = 1 point
+const POINTS_PER_NAIRA = 0.002; // ₦500 = 1 point
 const WELCOME_BONUS = 20; // points on first completed order
 const POINTS_PER_REDEMPTION = 100; // 100 points = ₦500
 const NAIRA_PER_REDEMPTION = 500; // ₦500 discount per 100 points
@@ -172,12 +172,10 @@ export async function calculateRedemption(req, res) {
     const { points_to_use, order_subtotal } = req.body;
 
     if (!points_to_use || !order_subtotal) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "points_to_use and order_subtotal are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "points_to_use and order_subtotal are required",
+      });
     }
 
     const { data: account } = await supabase
@@ -195,12 +193,10 @@ export async function calculateRedemption(req, res) {
     const balance = account.points_balance;
 
     if (points_to_use < MIN_POINTS_TO_REDEEM) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: `Minimum ${MIN_POINTS_TO_REDEEM} points required to redeem`,
-        });
+      return res.status(400).json({
+        success: false,
+        message: `Minimum ${MIN_POINTS_TO_REDEEM} points required to redeem`,
+      });
     }
     if (points_to_use > balance) {
       return res
@@ -208,12 +204,10 @@ export async function calculateRedemption(req, res) {
         .json({ success: false, message: "Insufficient points balance" });
     }
     if (points_to_use % POINTS_PER_REDEMPTION !== 0) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: `Points must be redeemed in multiples of ${POINTS_PER_REDEMPTION}`,
-        });
+      return res.status(400).json({
+        success: false,
+        message: `Points must be redeemed in multiples of ${POINTS_PER_REDEMPTION}`,
+      });
     }
 
     const rawDiscount =
@@ -242,12 +236,10 @@ export async function redeemPoints(req, res) {
     const { order_id, points_to_use } = req.body;
 
     if (!order_id || !points_to_use) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "order_id and points_to_use required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "order_id and points_to_use required",
+      });
     }
 
     const { data: account } = await supabase
@@ -368,12 +360,10 @@ export async function manualAdjustPoints(req, res) {
   try {
     const { user_id, points, reason } = req.body;
     if (!user_id || !points || !reason) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "user_id, points and reason are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "user_id, points and reason are required",
+      });
     }
 
     const { data: account } = await supabase

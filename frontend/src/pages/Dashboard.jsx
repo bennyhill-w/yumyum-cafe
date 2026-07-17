@@ -396,9 +396,12 @@ function OverviewTab({ orders, reservations, setTab }) {
 function LoyaltyTab({ account, transactions }) {
   const pointsBalance = account?.points_balance || 0;
   const lifetimePoints = account?.lifetime_points || 0;
-  const pointsToNextReward = 100 - (pointsBalance % 100);
+  const currentCycleProgress = pointsBalance % 100;
+  const pointsToNextReward = 100 - currentCycleProgress;
   const rewardsAvailable = Math.floor(pointsBalance / 100);
-  const progressPercent = ((pointsBalance % 100) / 100) * 100;
+  const progressPercent = (currentCycleProgress / 100) * 100;
+  const nextMilestone = (rewardsAvailable + 1) * 100;
+  const prevMilestone = rewardsAvailable * 100;
 
   const TRANSACTION_ICONS = {
     earned: {
@@ -454,27 +457,34 @@ function LoyaltyTab({ account, transactions }) {
           </p>
 
           <div className="bg-white/10 rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-white text-sm font-bold font-sans">
-                Next ₦500 reward
+                Progress to next ₦500 reward
               </span>
               <span className="text-yellow-300 text-sm font-bold font-sans">
                 {pointsToNextReward === 100
-                  ? "Ready!"
-                  : `${pointsToNextReward} pts away`}
+                  ? "🎉 Reward ready!"
+                  : `${pointsToNextReward} pts to go`}
               </span>
             </div>
-            <div className="w-full h-2.5 bg-white/20 rounded-full overflow-hidden">
+            <p className="text-white/50 text-xs font-sans mb-3">
+              {pointsBalance} / {nextMilestone} total points
+            </p>
+            <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
                 className="h-full rounded-full bg-yellow-300"
               />
             </div>
             <div className="flex justify-between mt-2">
-              <span className="text-white/40 text-xs font-sans">0</span>
-              <span className="text-white/40 text-xs font-sans">100 pts</span>
+              <span className="text-white/40 text-xs font-sans">
+                {prevMilestone} pts
+              </span>
+              <span className="text-white/40 text-xs font-sans">
+                {nextMilestone} pts
+              </span>
             </div>
           </div>
         </div>

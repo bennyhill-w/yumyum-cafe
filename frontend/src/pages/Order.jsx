@@ -1097,28 +1097,59 @@ export default function Order() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get("payment");
     const reference = urlParams.get("reference") || urlParams.get("trxref");
-    const pendingOrder = sessionStorage.getItem("pending_order_number");
+    const pendingOrderNumber = sessionStorage.getItem("pending_order_number");
 
-    if (paymentStatus === "success" && (reference || pendingOrder)) {
-      const ref = reference || pendingOrder;
+    if (
+      (paymentStatus === "success" || reference || pendingOrderNumber) &&
+      (reference || pendingOrderNumber)
+    ) {
+      const ref = reference || pendingOrderNumber;
+
+      // Restore state from sessionStorage
+      const savedOrder = sessionStorage.getItem("pending_order_data");
+      const savedBranch = sessionStorage.getItem("pending_branch");
+      const savedCustomer = sessionStorage.getItem("pending_customer");
+
+      if (savedBranch) setBranch(JSON.parse(savedBranch));
+      if (savedCustomer) setCustomerDetails(JSON.parse(savedCustomer));
+      if (savedOrder) setPlacedOrder(JSON.parse(savedOrder));
+
       // Verify payment with backend
       api
         .get(`/payment/verify/${ref}`)
         .then((res) => {
           if (res.data.success) {
+            // Clean up sessionStorage
             sessionStorage.removeItem("pending_order_number");
+            sessionStorage.removeItem("pending_order_data");
+            sessionStorage.removeItem("pending_branch");
+            sessionStorage.removeItem("pending_customer");
             clearCart();
             setSuccess(true);
             toast.success("Payment confirmed! Your order is being prepared.");
-            // Clean URL
             window.history.replaceState({}, "", "/order");
           } else {
             toast.error("Payment could not be verified. Please contact us.");
           }
         })
-        .catch(() =>
-          toast.error("Payment verification failed. Please contact us."),
-        );
+        .catch(() => {
+          // Even if verification fails, if we have the order data, show success
+          // (payment may have gone through but verification timed out)
+          if (savedOrder && savedBranch) {
+            sessionStorage.removeItem("pending_order_number");
+            sessionStorage.removeItem("pending_order_data");
+            sessionStorage.removeItem("pending_branch");
+            sessionStorage.removeItem("pending_customer");
+            clearCart();
+            setSuccess(true);
+            toast("Order placed. Please contact us to confirm your payment.", {
+              icon: "⚠️",
+            });
+            window.history.replaceState({}, "", "/order");
+          } else {
+            toast.error("Payment verification failed. Please contact us.");
+          }
+        });
     }
   }, []);
 
@@ -1164,10 +1195,19 @@ export default function Order() {
       const { order, paymentUrl } = res.data.data;
 
       if (customerDetails.paymentMethod === "online" && paymentUrl) {
-        // Store order number in sessionStorage before redirecting
+        // Save everything needed to restore state after Paystack redirect
         sessionStorage.setItem(
           "pending_order_number",
           res.data.data.order.order_number,
+        );
+        sessionStorage.setItem(
+          "pending_order_data",
+          JSON.stringify(res.data.data.order),
+        );
+        sessionStorage.setItem("pending_branch", JSON.stringify(branch));
+        sessionStorage.setItem(
+          "pending_customer",
+          JSON.stringify(customerDetails),
         );
         window.location.href = paymentUrl;
         return;

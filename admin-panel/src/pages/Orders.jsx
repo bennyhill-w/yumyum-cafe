@@ -21,7 +21,13 @@ import { format } from "date-fns";
 
 const STATUS_FLOW = ["pending", "confirmed", "preparing", "ready", "completed"];
 
-function OrderModal({ order, onClose, onStatusUpdate }) {
+const PAYMENT_STATUSES = [
+  { id: "pending", label: "Pending" },
+  { id: "paid", label: "Paid" },
+  { id: "failed", label: "Failed" },
+];
+
+function OrderModal({ order, onClose, onStatusUpdate, onPaymentStatusUpdate }) {
   if (!order) return null;
   return (
     <AnimatePresence>
@@ -140,7 +146,7 @@ function OrderModal({ order, onClose, onStatusUpdate }) {
               <p className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans mb-2">
                 Payment
               </p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-gray-600 font-sans capitalize">
                   {order.payment_method === "pickup"
                     ? "Pay on Pickup"
@@ -150,11 +156,33 @@ function OrderModal({ order, onClose, onStatusUpdate }) {
                   className={
                     order.payment_status === "paid"
                       ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
+                      : order.payment_status === "failed"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
                   }
                 >
                   {order.payment_status}
                 </Badge>
+              </div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest font-sans mb-2">
+                Update Payment Status
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PAYMENT_STATUSES.map((paymentStatus) => (
+                  <button
+                    key={paymentStatus.id}
+                    onClick={() =>
+                      onPaymentStatusUpdate(order.id, paymentStatus.id)
+                    }
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-sans transition-all ${
+                      order.payment_status === paymentStatus.id
+                        ? "bg-brand-red text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-brand-red-light hover:text-brand-red"
+                    }`}
+                  >
+                    {paymentStatus.label}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -192,13 +220,13 @@ export default function Orders() {
   });
 
   const { mutate: updateStatus } = useMutation({
-    mutationFn: ({ id, status }) => updateOrderStatus(id, status),
+    mutationFn: ({ id, payload }) => updateOrderStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries(["orders"]);
-      toast.success("Order status updated");
+      toast.success("Order updated");
       setSelectedOrder(null);
     },
-    onError: () => toast.error("Failed to update status"),
+    onError: () => toast.error("Failed to update order"),
   });
 
   const orders = data?.data || [];
@@ -448,7 +476,12 @@ export default function Orders() {
         <OrderModal
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
-          onStatusUpdate={(id, status) => updateStatus({ id, status })}
+          onStatusUpdate={(id, status) =>
+            updateStatus({ id, payload: { status } })
+          }
+          onPaymentStatusUpdate={(id, payment_status) =>
+            updateStatus({ id, payload: { payment_status } })
+          }
         />
       )}
     </div>

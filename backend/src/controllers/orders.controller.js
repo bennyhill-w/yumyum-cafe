@@ -173,7 +173,7 @@ export async function getAllOrders(req, res) {
 
 export async function updateOrderStatus(req, res) {
   try {
-    const { status } = req.body;
+    const { status, payment_status } = req.body;
     const validStatuses = [
       "pending",
       "confirmed",
@@ -182,14 +182,32 @@ export async function updateOrderStatus(req, res) {
       "completed",
       "cancelled",
     ];
-    if (!validStatuses.includes(status)) {
+    const validPaymentStatuses = ["pending", "paid", "failed"];
+
+    if (status && !validStatuses.includes(status)) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid status" });
+        .json({ success: false, message: "Invalid order status" });
     }
+    if (payment_status && !validPaymentStatuses.includes(payment_status)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid payment status" });
+    }
+
+    const updatePayload = {};
+    if (status) updatePayload.order_status = status;
+    if (payment_status) updatePayload.payment_status = payment_status;
+
+    if (Object.keys(updatePayload).length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No updates provided" });
+    }
+
     const { data, error } = await supabase
       .from("orders")
-      .update({ order_status: status })
+      .update(updatePayload)
       .eq("id", req.params.id)
       .select()
       .single();
