@@ -9,6 +9,7 @@ import contactRoutes from "./src/routes/contact.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import paymentRoutes from "./src/routes/payment.routes.js";
 import userRoutes from "./src/routes/users.routes.js";
+import loyaltyRoutes from "./src/routes/loyalty.routes.js";
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/loyalty", loyaltyRoutes);
 
 // ── 404 handler ──
 app.use("*splat", (req, res) => {

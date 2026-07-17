@@ -5,6 +5,7 @@ import {
   initializePayment,
   verifyPayment,
 } from "../services/paystack.service.js";
+import { awardOrderPoints, reverseOrderPoints } from "./loyalty.controller.js";
 
 function generateOrderNumber() {
   const timestamp = Date.now().toString().slice(-6);
@@ -24,6 +25,7 @@ export async function createOrder(req, res) {
       items,
       payment_method,
       notes,
+      user_id,
     } = req.body;
 
     // Get branch
@@ -54,9 +56,10 @@ export async function createOrder(req, res) {
       items,
       subtotal,
       payment_method,
-      payment_status: payment_method === "pickup" ? "pending" : "pending",
+      payment_status: "pending",
       order_status: "pending",
       notes,
+      user_id: user_id || null,
     };
 
     const { data: order, error } = await supabase
@@ -191,6 +194,15 @@ export async function updateOrderStatus(req, res) {
       .select()
       .single();
     if (error) throw error;
+
+    if (status === "completed" && data?.user_id) {
+      awardOrderPoints(data.user_id, data).catch(console.error);
+    }
+
+    if (status === "cancelled" && data?.user_id) {
+      reverseOrderPoints(data.user_id, data).catch(console.error);
+    }
+
     res.json({ success: true, data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
