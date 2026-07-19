@@ -26,6 +26,8 @@ export async function createOrder(req, res) {
       payment_method,
       notes,
       user_id,
+      promo_code,
+      promo_discount,
     } = req.body;
 
     // Get branch
@@ -60,6 +62,8 @@ export async function createOrder(req, res) {
       order_status: "pending",
       notes,
       user_id: user_id || null,
+      promo_code: promo_code || null,
+      promo_discount: promo_discount || 0,
     };
 
     const { data: order, error } = await supabase
@@ -94,6 +98,12 @@ export async function createOrder(req, res) {
           message: `Payment initialization failed: ${err.message}`,
         });
       }
+    }
+
+    // Increment promo code usage count
+    if (promo_code) {
+      const { applyPromoCode } = await import("./promo.controller.js");
+      applyPromoCode(promo_code).catch(console.error);
     }
 
     // Send notifications (non-blocking)

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /track/
+
+Sitemap: https://yumyum-cafe.com.ng/sitemap.xml

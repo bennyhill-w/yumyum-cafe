@@ -19,6 +19,7 @@ import { useBranches } from "../hooks/useBranches";
 import { Link } from "react-router-dom";
 import { sendContact } from "../services/contactService";
 import toast from "react-hot-toast";
+import SEO from "../components/SEO";
 
 const SUBJECTS = [
   { id: "general", label: "General Inquiry" },
@@ -172,6 +173,11 @@ export default function Contact() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Yum-Yum Cafe Lagos. Call, email or visit any of our 4 branches. We'd love to hear from you."
+        url="/contact"
+      />
       {/* ── HERO ── */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />

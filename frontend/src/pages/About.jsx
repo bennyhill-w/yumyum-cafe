@@ -140,6 +140,11 @@ export default function About() {
 
   return (
     <div className="bg-white">
+      <SEO
+        title="About Us"
+        description="Learn about Yum-Yum Cafe — Lagos favourite fast food restaurant serving fresh Continental and African dishes daily since 2018."
+        url="/about"
+      />
       {/* ── HERO ── */}
       <div className="relative bg-brand-red overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />

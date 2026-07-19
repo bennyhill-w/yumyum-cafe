@@ -15,6 +15,7 @@ import { IoFlameSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { useBranches } from "../hooks/useBranches";
+import SEO from "../components/SEO";
 
 const BRANCH_IMAGES = {
   baruwa: "/src/assets/branch-baruwa.jpg",
@@ -202,6 +203,11 @@ export default function FindUs() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO
+        title="Find Us"
+        description="Find your nearest Yum-Yum Cafe branch in Lagos. We have 4 locations — Baruwa, Ijegun, Idimu and Abulegba. Open daily 8AM–10PM."
+        url="/find-us"
+      />
       {/* ── HERO ── */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />

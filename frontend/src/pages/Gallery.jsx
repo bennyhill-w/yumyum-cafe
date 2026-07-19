@@ -7,6 +7,7 @@ import { IoFlameSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const GALLERY_ITEMS = [
   {
@@ -339,6 +340,11 @@ export default function Gallery() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO
+        title="Gallery"
+        description="See our food, restaurant and team photos. Fresh dishes, beautiful spaces and happy customers at Yum-Yum Cafe Lagos."
+        url="/gallery"
+      />
       {/* ── HERO ── */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />

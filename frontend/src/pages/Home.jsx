@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { FiArrowRight } from "react-icons/fi";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { GiForkKnifeSpoon } from "react-icons/gi";
+import SEO from "../components/SEO";
 import HeroSection from "../components/home/HeroSection";
 import MarqueeStrip from "../components/home/MarqueeStrip";
 import FeaturedDishes from "../components/home/FeaturedDishes";
@@ -90,6 +91,66 @@ function StatsBar() {
   );
 }
 
+const restaurantSchema = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: "Yum-Yum Cafe",
+  description:
+    "Quick service restaurant offering fresh Continental & African dishes, bakery, ice cream and conference hall across 4 Lagos locations.",
+  url: "https://yumyum-cafe.com.ng",
+  telephone: "+2349165661589",
+  servesCuisine: ["Nigerian", "Continental", "African"],
+  priceRange: "₦₦",
+  openingHours: "Mo-Su 08:00-22:00",
+  hasMap: "https://maps.google.com/?q=Yum-Yum+Cafe+Lagos",
+  location: [
+    {
+      "@type": "Place",
+      name: "Baruwa Branch",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "67B Aina Obembe Street Off Oluwaga Road",
+        addressLocality: "Baruwa",
+        addressRegion: "Lagos",
+        addressCountry: "NG",
+      },
+    },
+    {
+      "@type": "Place",
+      name: "Ijegun Branch",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "136 Isheri Oshun Rd, Isolo Rd",
+        addressLocality: "Ijegun",
+        addressRegion: "Lagos",
+        addressCountry: "NG",
+      },
+    },
+    {
+      "@type": "Place",
+      name: "Idimu Branch",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Adjacent Idimu Central Mosque",
+        addressLocality: "Idimu",
+        addressRegion: "Lagos",
+        addressCountry: "NG",
+      },
+    },
+    {
+      "@type": "Place",
+      name: "Abulegba Branch",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "378 Lagos-Abeokuta Expy",
+        addressLocality: "Abule Egba",
+        addressRegion: "Lagos",
+        addressCountry: "NG",
+      },
+    },
+  ],
+};
+
 function OrderCTA() {
   const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
 
@@ -169,6 +230,12 @@ function OrderCTA() {
 export default function Home() {
   return (
     <>
+      <SEO
+        title="Order Fresh Food Online"
+        description="Lagos favourite fast food restaurant. Fresh Continental & African dishes, bakery, ice cream across 4 locations — Baruwa, Ijegun, Idimu, Abulegba."
+        url="/"
+        structuredData={restaurantSchema}
+      />
       <HeroSection />
       <MarqueeStrip />
       <StatsBar />

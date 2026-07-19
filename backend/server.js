@@ -10,6 +10,9 @@ import authRoutes from "./src/routes/auth.routes.js";
 import paymentRoutes from "./src/routes/payment.routes.js";
 import userRoutes from "./src/routes/users.routes.js";
 import loyaltyRoutes from "./src/routes/loyalty.routes.js";
+import analyticsRoutes from "./src/routes/analytics.routes.js";
+import promoRoutes from "./src/routes/promo.routes.js";
+import reviewRoutes from "./src/routes/reviews.routes.js";
 
 dotenv.config();
 
@@ -60,6 +63,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/loyalty", loyaltyRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/promo", promoRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // ── 404 handler ──
 app.use("*splat", (req, res) => {

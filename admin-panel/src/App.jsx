@@ -6,6 +6,9 @@ import Reservations from "./pages/Reservations";
 import Contacts from "./pages/Contacts";
 import MenuManager from "./pages/MenuManager";
 import BranchSettings from "./pages/BranchSettings";
+import Analytics from "./pages/Analytics";
+import PromoCodes from "./pages/PromoCodes";
+import Reviews from "./pages/Reviews";
 import AdminWrapper from "./components/layout/AdminWrapper";
 import NotFound from "./pages/NotFound";
 
@@ -56,6 +59,30 @@ export default function App() {
             element={
               <ProtectedRoute requiredRole="super_admin">
                 <BranchSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="analytics"
+            element={
+              <ProtectedRoute requiredRole="super_admin">
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="promo"
+            element={
+              <ProtectedRoute requiredRole="super_admin">
+                <PromoCodes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="reviews"
+            element={
+              <ProtectedRoute requiredRole="super_admin">
+                <Reviews />
               </ProtectedRoute>
             }
           />

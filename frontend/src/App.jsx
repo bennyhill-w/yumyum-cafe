@@ -7,6 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import PageWrapper from "./components/layout/PageWrapper";
+import PWAInstallPrompt from "./components/ui/PWAInstallPrompt";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Order from "./pages/Order";
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
+        <PWAInstallPrompt />
       </BrowserRouter>
     </>
   );

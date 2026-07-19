@@ -9,6 +9,9 @@ import {
   FiX,
   FiGrid,
   FiMapPin,
+  FiBarChart2,
+  FiTag,
+  FiStar,
 } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "../../services/ordersService";
@@ -99,6 +102,27 @@ function SidebarContent({ onClose }) {
       to: "/branches",
       icon: <FiMapPin size={18} />,
       label: "Branches",
+      badge: 0,
+      show: isSuperAdmin,
+    },
+    {
+      to: "/analytics",
+      icon: <FiBarChart2 size={18} />,
+      label: "Analytics",
+      badge: 0,
+      show: isSuperAdmin,
+    },
+    {
+      to: "/promo",
+      icon: <FiTag size={18} />,
+      label: "Promo Codes",
+      badge: 0,
+      show: isSuperAdmin,
+    },
+    {
+      to: "/reviews",
+      icon: <FiStar size={18} />,
+      label: "Reviews",
       badge: 0,
       show: isSuperAdmin,
     },

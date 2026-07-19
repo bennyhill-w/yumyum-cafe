@@ -9,6 +9,9 @@ const PAGE_TITLES = {
   "/menu": "Menu Manager",
   "/branches": "Branch Settings",
   "/contacts": "Messages",
+  "/analytics": "Analytics",
+  "/promo": "Promo Codes",
+  "/reviews": "Reviews",
 };
 
 export default function AdminNavbar({ onMenuClick }) {

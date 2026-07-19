@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://yumyum-cafe.com.ng/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/menu</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/order</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/find-us</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/gallery</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/reservations</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://yumyum-cafe.com.ng/contact</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+</urlset>

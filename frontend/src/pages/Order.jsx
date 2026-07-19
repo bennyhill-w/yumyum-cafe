@@ -11,6 +11,7 @@ import {
   FiMapPin,
   FiCheck,
   FiX,
+  FiTag,
 } from "react-icons/fi";
 import { IoFlameSharp } from "react-icons/io5";
 import { MdOutlineDeliveryDining, MdOutlinePayment } from "react-icons/md";
@@ -30,6 +31,7 @@ import { createOrder } from "../services/orderService";
 import { getMenuByBranch } from "../services/menuService";
 import { getLoyaltyAccount } from "../services/userService";
 import MenuItemModal from "../components/menu/MenuItemModal";
+import SEO from "../components/SEO";
 
 const STEPS = [
   { id: 1, label: "Select Branch" },
@@ -517,6 +519,10 @@ function DetailsStep({ onBack, onNext }) {
   const [errors, setErrors] = useState({});
   const [usePoints, setUsePoints] = useState(false);
   const [pointsToUse, setPointsToUse] = useState(100);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoResult, setPromoResult] = useState(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState("");
 
   const { data: loyaltyData } = useQuery({
     queryKey: ["loyalty-checkout"],
@@ -530,6 +536,8 @@ function DetailsStep({ onBack, onNext }) {
     1000, // cap at 1000 points = ₦5,000 max discount per order
   );
   const pointsDiscount = usePoints ? (pointsToUse / 100) * 500 : 0;
+  const getTotalPrice = useCartStore((s) => s.getTotalPrice);
+  const subtotal = getTotalPrice();
 
   const set = (k, v) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -557,7 +565,36 @@ function DetailsStep({ onBack, onNext }) {
       ...form,
       pointsToRedeem: usePoints ? pointsToUse : 0,
       loyaltyDiscount: usePoints ? pointsDiscount : 0,
+      promoCode: promoResult ? promoResult.code : null,
+      promoDiscount: promoResult ? promoResult.discount : 0,
     });
+  };
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError("");
+    try {
+      const res = await api.post("/promo/validate", {
+        code: promoCode.toUpperCase().trim(),
+        order_subtotal: subtotal,
+      });
+      setPromoResult(res.data.data);
+      toast.success(
+        `Code applied! ₦${res.data.data.discount.toLocaleString()} off`,
+      );
+    } catch (err) {
+      setPromoResult(null);
+      setPromoError(err.response?.data?.message || "Invalid promo code");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromoResult(null);
+    setPromoCode("");
+    setPromoError("");
   };
 
   const field = (label, key, type = "text", placeholder = "") => (
@@ -716,6 +753,83 @@ function DetailsStep({ onBack, onNext }) {
             )}
           </div>
         )}
+
+        {/* Promo code */}
+        <div className="mt-5">
+          <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
+            Promo Code (optional)
+          </label>
+          {promoResult ? (
+            <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-2xl">
+              <FiCheck className="text-green-600 flex-shrink-0" size={16} />
+              <div className="flex-1">
+                <p className="font-bold text-green-700 text-sm font-sans">
+                  {promoResult.code} applied!
+                </p>
+                <p className="text-green-600 text-xs font-sans">
+                  ₦{promoResult.discount.toLocaleString()} discount —{" "}
+                  {promoResult.description}
+                </p>
+              </div>
+              <button
+                onClick={handleRemovePromo}
+                className="text-green-500 hover:text-green-700 flex-shrink-0"
+              >
+                <FiX size={16} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => {
+                    setPromoCode(e.target.value.toUpperCase());
+                    setPromoError("");
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleApplyPromo()}
+                  placeholder="Enter promo code e.g. JOLLOF20"
+                  className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-mono font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-brand-red transition-all ${
+                    promoError
+                      ? "border-red-400 bg-red-50"
+                      : "border-gray-200 bg-white"
+                  }`}
+                />
+              </div>
+              <motion.button
+                onClick={handleApplyPromo}
+                disabled={!promoCode.trim() || promoLoading}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 bg-brand-red text-white font-bold px-5 py-3.5 rounded-2xl text-sm font-sans hover:bg-brand-red-dark transition-colors disabled:opacity-50 flex-shrink-0"
+              >
+                {promoLoading ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                  />
+                ) : (
+                  "Apply"
+                )}
+              </motion.button>
+            </div>
+          )}
+          {promoError && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-red-500 text-xs mt-1.5 font-sans flex items-center gap-1"
+            >
+              <FiX size={11} /> {promoError}
+            </motion.p>
+          )}
+        </div>
 
         {/* Payment method */}
         <div className="mt-6">
@@ -884,12 +998,27 @@ function ConfirmStep({
               </span>
             </div>
           )}
+          {customerDetails.promoDiscount > 0 && (
+            <div className="flex items-center justify-between py-2 text-green-600">
+              <span className="font-sans text-xs sm:text-sm flex items-center gap-1.5">
+                <FiTag size={13} />
+                Promo code ({customerDetails.promoCode})
+              </span>
+              <span className="font-bold text-sm">
+                −{formatCurrency(customerDetails.promoDiscount)}
+              </span>
+            </div>
+          )}
           <div className="border-t border-gray-100 mt-2 pt-4 sm:pt-5 flex items-center justify-between">
             <span className="text-gray-500 font-sans text-xs sm:text-sm">
               Total Amount
             </span>
             <span className="font-display font-extrabold text-gray-900 text-xl sm:text-2xl">
-              {formatCurrency(total - (customerDetails.loyaltyDiscount || 0))}
+              {formatCurrency(
+                total -
+                  (customerDetails.loyaltyDiscount || 0) -
+                  (customerDetails.promoDiscount || 0),
+              )}
             </span>
           </div>
         </div>
@@ -1189,6 +1318,8 @@ export default function Order() {
         })),
         payment_method: customerDetails.paymentMethod,
         notes: customerDetails.notes || null,
+        promo_code: customerDetails.promoCode || null,
+        promo_discount: customerDetails.promoDiscount || 0,
       };
 
       const res = await createOrder(orderPayload);
@@ -1243,6 +1374,11 @@ export default function Order() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Order Online"
+        description="Order fresh food online from Yum-Yum Cafe. Pick your branch, choose your dishes and pay securely. Ready for pickup in minutes."
+        url="/order"
+      />
       {/* Page header */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />

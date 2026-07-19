@@ -20,6 +20,7 @@ import { useBranches } from "../hooks/useBranches";
 import { Link } from "react-router-dom";
 import { createReservation } from "../services/reservationService";
 import toast from "react-hot-toast";
+import SEO from "../components/SEO";
 
 const TIME_SLOTS = [
   "08:00 AM",

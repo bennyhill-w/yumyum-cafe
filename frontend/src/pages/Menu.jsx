@@ -18,6 +18,7 @@ import useCartStore from "../store/cartStore";
 import toast from "react-hot-toast";
 import { getAllMenu } from "../services/menuService";
 import Spinner from "../components/ui/Spinner";
+import SEO from "../components/SEO";
 
 const CATEGORY_ICONS = {
   all: <GiForkKnifeSpoon size={18} />,
@@ -364,6 +365,11 @@ export default function Menu() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Our Menu"
+        description="Browse Yum-Yum Cafe's full menu — jollof rice, grilled chicken, fresh pastries, ice cream and more. Order online for pickup at your nearest Lagos branch."
+        url="/menu"
+      />
       {/* ── PAGE HEADER ── */}
       <div className="bg-brand-red relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-pattern opacity-20" />
