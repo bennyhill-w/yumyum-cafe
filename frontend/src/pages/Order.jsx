@@ -45,11 +45,16 @@ const CATEGORIES = [
   { id: "all", label: "All Items" },
   { id: "rice-dishes", label: "Rice Dishes" },
   { id: "chicken", label: "Chicken" },
+  { id: "swallow", label: "Swallow" },
+  { id: "soups", label: "Nigerian Soups" },
   { id: "bakery", label: "Bakery" },
-  { id: "snacks", label: "Snacks" },
+  { id: "snacks", label: "Snacks & Pastries" },
   { id: "sides", label: "Sides" },
   { id: "drinks", label: "Drinks" },
   { id: "desserts", label: "Ice Cream & Desserts" },
+  { id: "combo-deals", label: "Combo Deals" },
+  { id: "food-packages", label: "Food Packages" },
+  { id: "bulk-meals", label: "Bulk Meals" },
 ];
 
 // ── STEP INDICATOR ──

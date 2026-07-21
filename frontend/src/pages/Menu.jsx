@@ -6,7 +6,7 @@ import { IoFlameSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { GiChickenLeg, GiRiceCooker, GiForkKnifeSpoon } from "react-icons/gi";
-import { TbGlass, TbIceCream, TbBread } from "react-icons/tb";
+import { TbGlass, TbIceCream, TbBread, TbSoup } from "react-icons/tb";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -24,11 +24,16 @@ const CATEGORY_ICONS = {
   all: <GiForkKnifeSpoon size={18} />,
   "rice-dishes": <GiRiceCooker size={18} />,
   chicken: <GiChickenLeg size={18} />,
+  swallow: <GiForkKnifeSpoon size={18} />,
+  soups: <TbSoup size={18} />,
   bakery: <TbBread size={18} />,
   snacks: <TbBread size={18} />,
   sides: <HiOutlineSparkles size={18} />,
   drinks: <TbGlass size={18} />,
   desserts: <TbIceCream size={18} />,
+  "combo-deals": <IoFlameSharp size={18} />,
+  "food-packages": <GiForkKnifeSpoon size={18} />,
+  "bulk-meals": <GiRiceCooker size={18} />,
 };
 
 // Add MENU_CATEGORIES to placeholderData if not already there
@@ -36,11 +41,16 @@ const CATEGORIES = [
   { id: "all", label: "All Items" },
   { id: "rice-dishes", label: "Rice Dishes" },
   { id: "chicken", label: "Chicken" },
+  { id: "swallow", label: "Swallow" },
+  { id: "soups", label: "Nigerian Soups" },
   { id: "bakery", label: "Bakery" },
-  { id: "snacks", label: "Snacks" },
+  { id: "snacks", label: "Snacks & Pastries" },
   { id: "sides", label: "Sides" },
   { id: "drinks", label: "Drinks" },
   { id: "desserts", label: "Ice Cream & Desserts" },
+  { id: "combo-deals", label: "Combo Deals 🔥" },
+  { id: "food-packages", label: "Food Packages" },
+  { id: "bulk-meals", label: "Bulk Meals" },
 ];
 
 function MenuItemCard({ item, onAdd, onView }) {
