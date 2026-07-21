@@ -21,6 +21,7 @@ import { HiOutlineSparkles } from "react-icons/hi";
 import { TbChefHat } from "react-icons/tb";
 import { formatCurrency } from "../utils/formatCurrency";
 import { PLACEHOLDER_MENU } from "../utils/placeholderData";
+import { DELIVERY_AREAS } from "../utils/constants";
 import { useBranches } from "../hooks/useBranches";
 import Spinner from "../components/ui/Spinner";
 import useCartStore from "../store/cartStore";
@@ -507,7 +508,13 @@ function MenuStep({ branch, onBack, onNext }) {
 }
 
 // ── STEP 3: CUSTOMER DETAILS ──
-function DetailsStep({ onBack, onNext }) {
+function DetailsStep({
+  onBack,
+  onNext,
+  orderType,
+  setOrderType,
+  selectedBranch,
+}) {
   const { user, isAuthenticated } = useUserStore();
   const [form, setForm] = useState({
     name: user?.name || "",
@@ -515,9 +522,21 @@ function DetailsStep({ onBack, onNext }) {
     email: user?.email || "",
     notes: "",
     paymentMethod: "pickup",
+    deliveryAddress: "",
+    deliveryArea: "",
   });
   const [errors, setErrors] = useState({});
   const [usePoints, setUsePoints] = useState(false);
+
+  const selectedDeliveryArea = DELIVERY_AREAS.find(
+    (a) => a.area === form.deliveryArea,
+  );
+  const deliveryFee = selectedDeliveryArea?.fee || 0;
+
+  // Filter delivery areas by selected branch
+  const availableAreas = selectedBranch
+    ? DELIVERY_AREAS.filter((a) => a.branch === selectedBranch.id)
+    : DELIVERY_AREAS;
   const [pointsToUse, setPointsToUse] = useState(100);
   const [promoCode, setPromoCode] = useState("");
   const [promoResult, setPromoResult] = useState(null);
@@ -552,6 +571,11 @@ function DetailsStep({ onBack, onNext }) {
       e.phone = "Enter a valid Nigerian phone number";
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       e.email = "Enter a valid email address";
+    if (orderType === "delivery") {
+      if (!form.deliveryAddress.trim())
+        e.deliveryAddress = "Delivery address is required";
+      if (!form.deliveryArea) e.deliveryArea = "Please select your area";
+    }
     return e;
   };
 
@@ -563,6 +587,8 @@ function DetailsStep({ onBack, onNext }) {
     }
     onNext({
       ...form,
+      orderType,
+      deliveryFee: orderType === "delivery" ? deliveryFee : 0,
       pointsToRedeem: usePoints ? pointsToUse : 0,
       loyaltyDiscount: usePoints ? pointsDiscount : 0,
       promoCode: promoResult ? promoResult.code : null,
@@ -638,6 +664,154 @@ function DetailsStep({ onBack, onNext }) {
         <p className="text-gray-500 font-sans text-sm sm:text-base">
           So we know who to prepare your order for
         </p>
+      </div>
+
+      {/* Order type toggle */}
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6 mb-5">
+        <p className="font-bold text-gray-900 text-sm font-sans mb-3">
+          How would you like to receive your order?
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              id: "pickup",
+              icon: <TbChefHat size={22} />,
+              label: "Pickup",
+              sub: "Collect at branch",
+            },
+            {
+              id: "delivery",
+              icon: <MdOutlineDeliveryDining size={22} />,
+              label: "Delivery",
+              sub: "Delivered to you",
+            },
+          ].map((type) => (
+            <motion.button
+              key={type.id}
+              onClick={() => setOrderType(type.id)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`text-left p-4 rounded-2xl border-2 transition-all ${
+                orderType === type.id
+                  ? "border-brand-red bg-brand-red-light"
+                  : "border-gray-200 bg-white hover:border-brand-red/40"
+              }`}
+            >
+              <div
+                className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${
+                  orderType === type.id
+                    ? "bg-brand-red text-white"
+                    : "bg-gray-100 text-gray-500"
+                }`}
+              >
+                {type.icon}
+              </div>
+              <p
+                className={`font-bold text-sm font-sans ${
+                  orderType === type.id ? "text-brand-red" : "text-gray-900"
+                }`}
+              >
+                {type.label}
+              </p>
+              <p className="text-gray-400 text-xs font-sans">{type.sub}</p>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Delivery fields */}
+        <AnimatePresence>
+          {orderType === "delivery" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden mt-4 space-y-3"
+            >
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
+                  Delivery Area <span className="text-brand-red">*</span>
+                </label>
+                <select
+                  value={form.deliveryArea}
+                  onChange={(e) => set("deliveryArea", e.target.value)}
+                  className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-sans text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red transition-all appearance-none ${
+                    errors.deliveryArea
+                      ? "border-red-400 bg-red-50"
+                      : "border-gray-200 bg-white"
+                  }`}
+                >
+                  <option value="">Select your area</option>
+                  {availableAreas.map((a) => (
+                    <option key={a.area} value={a.area}>
+                      {a.area} — ₦{a.fee.toLocaleString()} delivery fee
+                    </option>
+                  ))}
+                </select>
+                {errors.deliveryArea && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-red-500 text-xs mt-1.5 font-sans"
+                  >
+                    {errors.deliveryArea}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2 font-sans">
+                  Full Delivery Address{" "}
+                  <span className="text-brand-red">*</span>
+                </label>
+                <textarea
+                  value={form.deliveryAddress}
+                  onChange={(e) => set("deliveryAddress", e.target.value)}
+                  placeholder="e.g. 12 Balogun Street, Agege, Lagos (be as specific as possible)"
+                  rows={2}
+                  className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-sans text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red transition-all resize-none ${
+                    errors.deliveryAddress
+                      ? "border-red-400 bg-red-50"
+                      : "border-gray-200 bg-white"
+                  }`}
+                />
+                {errors.deliveryAddress && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-red-500 text-xs mt-1.5 font-sans"
+                  >
+                    {errors.deliveryAddress}
+                  </motion.p>
+                )}
+              </div>
+
+              {selectedDeliveryArea && (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-2xl px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MdOutlineDeliveryDining
+                      className="text-green-600"
+                      size={16}
+                    />
+                    <span className="text-green-700 text-sm font-bold font-sans">
+                      Delivery fee
+                    </span>
+                  </div>
+                  <span className="text-green-700 font-bold text-sm font-sans">
+                    ₦{deliveryFee.toLocaleString()}
+                  </span>
+                </div>
+              )}
+
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+                <p className="text-amber-700 text-xs font-sans leading-relaxed">
+                  <span className="font-bold">Delivery time:</span>{" "}
+                  Approximately 45-60 minutes depending on traffic. The branch
+                  will call you to confirm before dispatch.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-8">
@@ -935,22 +1109,32 @@ function ConfirmStep({
       </div>
 
       <div className="space-y-4 sm:space-y-5">
-        {/* Branch */}
+        {/* Branch / Delivery */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-8 h-8 sm:w-9 sm:h-9 bg-brand-red-light rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
               <FiMapPin className="text-brand-red" size={14} />
             </div>
             <h3 className="font-bold text-sm sm:text-base text-gray-900 font-sans">
-              Pickup Branch
+              {customerDetails.orderType === "delivery"
+                ? "Delivery Details"
+                : "Pickup Branch"}
             </h3>
           </div>
           <p className="text-gray-600 text-xs sm:text-sm font-sans ml-10 sm:ml-12">
-            {branch.name} — {branch.address}
+            {branch.name} Branch
+            {customerDetails.orderType === "delivery" &&
+              ` — dispatching to ${customerDetails.deliveryArea}`}
           </p>
-          <p className="text-gray-400 text-[10px] sm:text-xs font-sans ml-10 sm:ml-12 mt-1">
-            {branch.hours}
-          </p>
+          {customerDetails.orderType === "delivery" ? (
+            <p className="text-gray-500 text-xs font-sans ml-10 sm:ml-12 mt-1">
+              {customerDetails.deliveryAddress}
+            </p>
+          ) : (
+            <p className="text-gray-400 text-[10px] sm:text-xs font-sans ml-10 sm:ml-12 mt-1">
+              {branch.hours}
+            </p>
+          )}
         </div>
 
         {/* Items */}
@@ -987,6 +1171,18 @@ function ConfirmStep({
               </div>
             ))}
           </div>
+          {customerDetails.orderType === "delivery" &&
+            customerDetails.deliveryFee > 0 && (
+              <div className="flex items-center justify-between py-2 text-gray-600">
+                <span className="font-sans text-xs sm:text-sm flex items-center gap-1.5">
+                  <MdOutlineDeliveryDining size={13} />
+                  Delivery fee ({customerDetails.deliveryArea})
+                </span>
+                <span className="font-bold text-sm">
+                  +{formatCurrency(customerDetails.deliveryFee)}
+                </span>
+              </div>
+            )}
           {customerDetails.loyaltyDiscount > 0 && (
             <div className="flex items-center justify-between py-2 text-green-600">
               <span className="font-sans text-xs sm:text-sm flex items-center gap-1.5">
@@ -1015,7 +1211,8 @@ function ConfirmStep({
             </span>
             <span className="font-display font-extrabold text-gray-900 text-xl sm:text-2xl">
               {formatCurrency(
-                total -
+                total +
+                  (customerDetails.deliveryFee || 0) -
                   (customerDetails.loyaltyDiscount || 0) -
                   (customerDetails.promoDiscount || 0),
               )}
@@ -1217,6 +1414,7 @@ export default function Order() {
   const [placing, setPlacing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [placedOrder, setPlacedOrder] = useState(null);
+  const [orderType, setOrderType] = useState("pickup");
   const clearCart = useCartStore((s) => s.clearCart);
   const items = useCartStore((s) => s.items);
   const { user, isAuthenticated } = useUserStore();
@@ -1320,6 +1518,10 @@ export default function Order() {
         notes: customerDetails.notes || null,
         promo_code: customerDetails.promoCode || null,
         promo_discount: customerDetails.promoDiscount || 0,
+        order_type: customerDetails.orderType || "pickup",
+        delivery_address: customerDetails.deliveryAddress || null,
+        delivery_area: customerDetails.deliveryArea || null,
+        delivery_fee: customerDetails.deliveryFee || 0,
       };
 
       const res = await createOrder(orderPayload);
@@ -1438,6 +1640,9 @@ export default function Order() {
               key="details"
               onBack={() => setStep(2)}
               onNext={handleDetailsNext}
+              orderType={orderType}
+              setOrderType={setOrderType}
+              selectedBranch={branch}
             />
           ) : (
             <ConfirmStep

@@ -28,6 +28,10 @@ export async function createOrder(req, res) {
       user_id,
       promo_code,
       promo_discount,
+      order_type,
+      delivery_address,
+      delivery_area,
+      delivery_fee,
     } = req.body;
 
     // Get branch
@@ -64,6 +68,10 @@ export async function createOrder(req, res) {
       user_id: user_id || null,
       promo_code: promo_code || null,
       promo_discount: promo_discount || 0,
+      order_type: order_type || "pickup",
+      delivery_address: delivery_address || null,
+      delivery_area: delivery_area || null,
+      delivery_fee: delivery_fee || 0,
     };
 
     const { data: order, error } = await supabase

@@ -73,5 +73,44 @@ export const ORDER_STATUSES = {
   CANCELLED: "cancelled",
 };
 
+export const DELIVERY_AREAS = [
+  // Near Baruwa branch
+  { area: "Baruwa", fee: 300, branch: "baruwa" },
+  { area: "Ayobo", fee: 500, branch: "baruwa" },
+  { area: "Ipaja", fee: 500, branch: "baruwa" },
+  { area: "Akowonjo", fee: 700, branch: "baruwa" },
+  { area: "Dopemu", fee: 800, branch: "baruwa" },
+  { area: "Meiran", fee: 800, branch: "baruwa" },
+  { area: "Abule Egba (near Baruwa)", fee: 800, branch: "baruwa" },
+
+  // Near Ijegun branch
+  { area: "Ijegun", fee: 300, branch: "ijegun" },
+  { area: "Isolo", fee: 500, branch: "ijegun" },
+  { area: "Okota", fee: 700, branch: "ijegun" },
+  { area: "Ago Palace Way", fee: 800, branch: "ijegun" },
+  { area: "Oshodi", fee: 800, branch: "ijegun" },
+  { area: "Mile 2", fee: 1000, branch: "ijegun" },
+  { area: "Festac Town", fee: 1000, branch: "ijegun" },
+  { area: "Volks", fee: 1000, branch: "ijegun" },
+
+  // Near Idimu branch
+  { area: "Idimu", fee: 300, branch: "idimu" },
+  { area: "Egbeda", fee: 500, branch: "idimu" },
+  { area: "Jakande", fee: 700, branch: "idimu" },
+  { area: "Cele", fee: 700, branch: "idimu" },
+  { area: "Ejigbo", fee: 800, branch: "idimu" },
+
+  // Near Abulegba branch
+  { area: "Abule Egba", fee: 300, branch: "abulegba" },
+  { area: "Agege", fee: 500, branch: "abulegba" },
+  { area: "Ifako", fee: 700, branch: "abulegba" },
+  { area: "Ogba", fee: 800, branch: "abulegba" },
+  { area: "Berger", fee: 1000, branch: "abulegba" },
+  { area: "Ikeja", fee: 1200, branch: "abulegba" },
+  { area: "Ojodu", fee: 1200, branch: "abulegba" },
+  { area: "Ojota", fee: 1500, branch: "abulegba" },
+  { area: "Ogudu", fee: 1500, branch: "abulegba" },
+];
+
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:4000/api";
