@@ -18,7 +18,7 @@ function StatsBar() {
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
   const [counts, setCounts] = useState([0, 0, 0, 0]);
 
-  const targets = [4, 50, 5000, 6];
+  const targets = [5, 50, 5000, 6];
   const labels = [
     "Lagos Branches",
     "Menu Items",

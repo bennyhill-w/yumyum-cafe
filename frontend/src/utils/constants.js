@@ -39,6 +39,16 @@ export const BRANCHES = [
     hours: "8:00 AM – 10:00 PM",
     coordinates: { lat: 6.6497, lng: 3.3044 },
   },
+  {
+    id: "ipaja",
+    name: "Ipaja",
+    address: "189 Ipaja Road, Baruwa-Ipaja, Lagos",
+    area: "Ipaja, Lagos",
+    phone: "07067318349",
+    whatsapp: "07067318349",
+    hours: "8:00 AM – 10:00 PM",
+    coordinates: { lat: 6.6012, lng: 3.2487 },
+  },
 ];
 
 export const MENU_CATEGORIES = [
@@ -82,6 +92,14 @@ export const DELIVERY_AREAS = [
   { area: "Dopemu", fee: 800, branch: "baruwa" },
   { area: "Meiran", fee: 800, branch: "baruwa" },
   { area: "Abule Egba (near Baruwa)", fee: 800, branch: "baruwa" },
+
+  // Near Ipaja branch (new)
+  { area: "Ipaja", fee: 300, branch: "ipaja" },
+  { area: "Baruwa-Ipaja", fee: 300, branch: "ipaja" },
+  { area: "Command", fee: 500, branch: "ipaja" },
+  { area: "Ile-Zik", fee: 500, branch: "ipaja" },
+  { area: "Powerline", fee: 700, branch: "ipaja" },
+  { area: "Abule Egba (near Ipaja)", fee: 700, branch: "ipaja" },
 
   // Near Ijegun branch
   { area: "Ijegun", fee: 300, branch: "ijegun" },

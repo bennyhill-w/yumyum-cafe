@@ -369,7 +369,7 @@ export default function Navbar() {
           <div className="absolute bottom-0 left-0 right-0 px-5 py-4 border-t border-white/20">
             <div className="flex items-center gap-2 text-white/70 text-xs font-sans">
               <MapPin size={13} />
-              <span>4 locations across Lagos</span>
+              <span>5 locations across Lagos</span>
             </div>
           </div>
         </div>

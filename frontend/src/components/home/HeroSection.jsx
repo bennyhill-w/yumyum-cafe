@@ -232,7 +232,7 @@ export default function HeroSection() {
               Fresh Continental & African dishes, freshly baked pastries, creamy
               ice cream, and a conference hall — all under one roof across{" "}
               <span className="text-white font-semibold">
-                4 Lagos locations.
+                5 Lagos locations.
               </span>
             </motion.p>
 
@@ -256,7 +256,7 @@ export default function HeroSection() {
                 },
                 {
                   icon: <FiMapPin size={16} />,
-                  title: "4 Branches",
+                  title: "5 Branches",
                   sub: "Across Lagos",
                 },
               ].map((chip) => (
@@ -366,7 +366,7 @@ export default function HeroSection() {
               <div className="flex items-center gap-1.5">
                 <FiMapPin className="text-yellow-300" size={14} />
                 <span className="text-white/60 text-sm font-sans">
-                  4 branches, Lagos
+                  5 branches, Lagos
                 </span>
               </div>
             </motion.div>
