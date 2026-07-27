@@ -205,7 +205,7 @@ export default function FindUs() {
     <div className="bg-white min-h-screen">
       <SEO
         title="Find Us"
-        description="Find your nearest Yum-Yum Cafe branch in Lagos. We have 4 locations — Baruwa, Ijegun, Idimu and Abulegba. Open daily 8AM–10PM."
+        description="Find your nearest Yum-Yum Cafe branch in Lagos. We have 5 locations — Baruwa, Ijegun, Idimu, Abulegba and Ipaja. Open daily 8AM–10PM."
         url="/find-us"
       />
       {/* ── HERO ── */}
@@ -249,14 +249,14 @@ export default function FindUs() {
               </span>
             </h1>
             <p className="text-white/65 text-lg max-w-xl font-sans leading-relaxed mb-8">
-              Four branches spread across Lagos — there is always a Yum-Yum Cafe
+              Five branches spread across Lagos — there is always a Yum-Yum Cafe
               within reach of you.
             </p>
 
             {/* Quick stats */}
             <div className="flex flex-wrap gap-6">
               {[
-                { icon: <MdStorefront size={16} />, text: "4 Branches" },
+                { icon: <MdStorefront size={16} />, text: "5 Branches" },
                 { icon: <FiClock size={16} />, text: "Open 8AM – 10PM Daily" },
                 { icon: <AiFillStar size={16} />, text: "4.8 Rated" },
                 { icon: <IoFlameSharp size={16} />, text: "Fresh Food Always" },

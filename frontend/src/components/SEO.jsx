@@ -17,7 +17,7 @@ export default function SEO({
 
   const fullDescription =
     description ||
-    "Quick service restaurant offering fresh Continental & African dishes, bakery, ice cream and conference hall across 4 Lagos locations. Order online today.";
+    "Quick service restaurant offering fresh Continental & African dishes, bakery, ice cream and conference hall across 5 Lagos locations. Order online today.";
 
   const fullUrl = url ? `${BASE_URL}${url}` : BASE_URL;
   const fullImage = image || DEFAULT_IMAGE;

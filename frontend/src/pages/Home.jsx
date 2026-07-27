@@ -96,7 +96,7 @@ const restaurantSchema = {
   "@type": "Restaurant",
   name: "Yum-Yum Cafe",
   description:
-    "Quick service restaurant offering fresh Continental & African dishes, bakery, ice cream and conference hall across 4 Lagos locations.",
+    "Quick service restaurant offering fresh Continental & African dishes, bakery, ice cream and conference hall across 5 Lagos locations.",
   url: "https://yumyum-cafe.com.ng",
   telephone: "+2349165661589",
   servesCuisine: ["Nigerian", "Continental", "African"],
@@ -232,7 +232,7 @@ export default function Home() {
     <>
       <SEO
         title="Order Fresh Food Online"
-        description="Lagos favourite fast food restaurant. Fresh Continental & African dishes, bakery, ice cream across 4 locations — Baruwa, Ijegun, Idimu, Abulegba."
+        description="Lagos favourite fast food restaurant. Fresh Continental & African dishes, bakery, ice cream across 5 locations — Baruwa, Ijegun, Idimu, Abulegba, Ipaja."
         url="/"
         structuredData={restaurantSchema}
       />

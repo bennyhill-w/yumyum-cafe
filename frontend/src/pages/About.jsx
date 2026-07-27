@@ -10,6 +10,7 @@ import { MdOutlineDeliveryDining, MdStorefront } from "react-icons/md";
 import { TbChefHat, TbHeart, TbBread, TbIceCream } from "react-icons/tb";
 import { FiMapPin, FiClock, FiUsers } from "react-icons/fi";
 import CountUpModule from "react-countup";
+import SEO from "../components/SEO";
 
 const CountUp = CountUpModule.default || CountUpModule;
 

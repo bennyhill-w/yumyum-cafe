@@ -41,7 +41,7 @@ export default function Footer() {
             </Link>
             <p className="text-white/65 text-sm leading-relaxed mb-5">
               Quick service restaurant offering delicious Continental & African
-              dishes across 4 Lagos locations. Fresh food, fast service, every
+              dishes across 5 Lagos locations. Fresh food, fast service, every
               time.
             </p>
             {/* Social links */}

@@ -33,7 +33,7 @@ const SUBJECTS = [
 const FAQS = [
   {
     q: "What are your opening hours?",
-    a: "All four Yum-Yum Cafe branches are open daily from 8:00 AM to 10:00 PM, including weekends and public holidays.",
+    a: "All five Yum-Yum Cafe branches are open daily from 8:00 AM to 10:00 PM, including weekends and public holidays.",
   },
   {
     q: "Can I order online and pay on pickup?",
@@ -175,7 +175,7 @@ export default function Contact() {
     <div className="bg-white min-h-screen">
       <SEO
         title="Contact Us"
-        description="Get in touch with Yum-Yum Cafe Lagos. Call, email or visit any of our 4 branches. We'd love to hear from you."
+        description="Get in touch with Yum-Yum Cafe Lagos. Call, email or visit any of our 5 branches. We'd love to hear from you."
         url="/contact"
       />
       {/* ── HERO ── */}
