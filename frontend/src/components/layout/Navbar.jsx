@@ -37,6 +37,8 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const getTotalItems = useCartStore((s) => s.getTotalItems);
+  const isHome = location.pathname === "/";
+  const isTransparent = isHome && !scrolled;
   const totalItems = getTotalItems();
   const { user, isAuthenticated, clearAuth } = useUserStore();
 
@@ -80,8 +82,10 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          scrolled ? "bg-white shadow-md border-b border-gray-100" : "bg-white"
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          isTransparent
+            ? "bg-transparent"
+            : "bg-white shadow-md border-b border-gray-100"
         }`}
       >
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -97,7 +101,11 @@ export default function Navbar() {
                 alt="Yum-Yum Cafe"
                 className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover flex-shrink-0"
               />
-              <span className="font-display text-brand-red text-xl leading-tight hidden sm:block">
+              <span
+                className={`font-display text-xl leading-tight hidden sm:block transition-colors duration-500 ${
+                  isTransparent ? "text-white" : "text-brand-red"
+                }`}
+              >
                 Yum-Yum Cafe
               </span>
             </Link>
@@ -109,10 +117,14 @@ export default function Navbar() {
                   to={to}
                   end={to === "/"}
                   className={({ isActive }) =>
-                    `px-3 py-2 rounded-lg text-sm font-semibold transition-colors font-sans ${
-                      isActive
-                        ? "bg-brand-red-light text-brand-red"
-                        : "text-gray-600 hover:text-brand-red hover:bg-brand-red-light"
+                    `px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 font-sans ${
+                      isTransparent
+                        ? isActive
+                          ? "bg-white/20 text-white"
+                          : "text-white/85 hover:text-white hover:bg-white/15"
+                        : isActive
+                          ? "bg-brand-red-light text-brand-red"
+                          : "text-gray-600 hover:text-brand-red hover:bg-brand-red-light"
                     }`
                   }
                 >
@@ -230,7 +242,11 @@ export default function Navbar() {
                 <div className="hidden lg:flex items-center gap-2">
                   <button
                     onClick={() => openAuth("login")}
-                    className="text-gray-700 hover:text-brand-red text-sm font-semibold font-sans transition-colors px-3 py-2 rounded-lg hover:bg-brand-red-light"
+                    className={`text-sm font-semibold font-sans transition-all duration-300 px-3 py-2 rounded-lg ${
+                      isTransparent
+                        ? "text-white/85 hover:text-white hover:bg-white/15"
+                        : "text-gray-700 hover:text-brand-red hover:bg-brand-red-light"
+                    }`}
                   >
                     Sign In
                   </button>
@@ -238,7 +254,11 @@ export default function Navbar() {
                     onClick={() => openAuth("register")}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-1.5 bg-brand-red text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-brand-red-dark transition-colors font-sans"
+                    className={`flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-lg transition-all duration-300 font-sans ${
+                      isTransparent
+                        ? "bg-white/15 border border-white/30 text-white hover:bg-white/25"
+                        : "bg-brand-red text-white hover:bg-brand-red-dark"
+                    }`}
                   >
                     <User size={14} /> Register
                   </motion.button>
@@ -248,7 +268,11 @@ export default function Navbar() {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setIsOpen((v) => !v)}
-                className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+                className={`lg:hidden p-2 rounded-lg transition-colors ${
+                  isTransparent
+                    ? "text-white hover:bg-white/15"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
                 aria-label={isOpen ? "Close menu" : "Open menu"}
               >
                 {isOpen ? <X size={22} /> : <Menu size={22} />}

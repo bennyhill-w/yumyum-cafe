@@ -70,7 +70,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden -mt-16"
       aria-label="Hero"
       style={{
         background: `
@@ -159,7 +159,7 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         <div
           ref={ref}
-          className="grid lg:grid-cols-2 gap-8 lg:gap-0 items-center min-h-[92vh] py-16 lg:py-0 relative z-10"
+          className="grid lg:grid-cols-2 gap-8 lg:gap-0 items-center min-h-screen pt-28 pb-16 lg:pt-24 lg:pb-0 relative z-10"
         >
           {/* ── LEFT — Text ── */}
           <div className="order-2 lg:order-1 lg:pr-8">
