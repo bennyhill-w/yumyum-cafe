@@ -2,13 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import {
-  FiArrowRight,
-  FiMapPin,
-  FiStar,
-  FiClock,
-  FiShield,
-} from "react-icons/fi";
+import { FiArrowRight, FiMapPin, FiStar, FiClock, FiShield } from "react-icons/fi";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { IoFlameSharp } from "react-icons/io5";
 import { GiChickenLeg, GiForkKnifeSpoon } from "react-icons/gi";
@@ -23,41 +17,11 @@ import bakery from "../../assets/Bread-removebg-preview.png";
 import hallImage from "../../assets/Hall.jpg";
 
 const SLIDES = [
-  {
-    id: 1,
-    image: akoumeDish,
-    service: "Restaurant",
-    icon: <GiForkKnifeSpoon size={14} />,
-    label: "Jollof Rice & Seafood",
-  },
-  {
-    id: 2,
-    image: foodDish,
-    service: "Restaurant",
-    icon: <GiChickenLeg size={14} />,
-    label: "Grilled Chicken & Noodles",
-  },
-  {
-    id: 3,
-    image: iceCream,
-    service: "Ice Cream",
-    icon: <TbIceCream size={14} />,
-    label: "Hand-Scooped Ice Cream",
-  },
-  {
-    id: 4,
-    image: bakery,
-    service: "Bakery",
-    icon: <TbChefHat size={14} />,
-    label: "Freshly Baked Bread",
-  },
-  {
-    id: 5,
-    image: hallImage,
-    service: "Conference Hall",
-    icon: <MdStorefront size={14} />,
-    label: "Conference & Meetings",
-  },
+  { id: 1, image: akoumeDish, service: "Restaurant", icon: <GiForkKnifeSpoon size={14} />, label: "Jollof Rice & Seafood" },
+  { id: 2, image: foodDish, service: "Restaurant", icon: <GiChickenLeg size={14} />, label: "Grilled Chicken & Noodles" },
+  { id: 3, image: iceCream, service: "Ice Cream", icon: <TbIceCream size={14} />, label: "Hand-Scooped Ice Cream" },
+  { id: 4, image: bakery, service: "Bakery", icon: <TbChefHat size={14} />, label: "Freshly Baked Bread" },
+  { id: 5, image: hallImage, service: "Conference Hall", icon: <MdStorefront size={14} />, label: "Conference & Meetings" },
 ];
 
 // Food-themed line art SVG pattern for right side
@@ -84,41 +48,11 @@ function FoodLineArt() {
         <line x1="430" y1="89" x2="430" y2="160" />
       </g>
       {/* Leaf 1 */}
-      <path
-        d="M460 200 Q490 170 500 200 Q490 230 460 200Z"
-        opacity="0.05"
-        stroke="white"
-        strokeWidth="1"
-        fill="none"
-      />
-      <line
-        x1="460"
-        y1="200"
-        x2="500"
-        y2="200"
-        opacity="0.04"
-        stroke="white"
-        strokeWidth="1"
-      />
+      <path d="M460 200 Q490 170 500 200 Q490 230 460 200Z" opacity="0.05" stroke="white" strokeWidth="1" fill="none" />
+      <line x1="460" y1="200" x2="500" y2="200" opacity="0.04" stroke="white" strokeWidth="1" />
       {/* Circular decorative ring */}
-      <circle
-        cx="320"
-        cy="400"
-        r="180"
-        opacity="0.04"
-        stroke="white"
-        strokeWidth="1"
-        strokeDasharray="4 8"
-      />
-      <circle
-        cx="320"
-        cy="400"
-        r="200"
-        opacity="0.03"
-        stroke="white"
-        strokeWidth="0.5"
-        strokeDasharray="2 12"
-      />
+      <circle cx="320" cy="400" r="180" opacity="0.04" stroke="white" strokeWidth="1" strokeDasharray="4 8" />
+      <circle cx="320" cy="400" r="200" opacity="0.03" stroke="white" strokeWidth="0.5" strokeDasharray="2 12" />
       {/* Small dots scattered */}
       <circle cx="420" cy="300" r="2" fill="white" opacity="0.08" />
       <circle cx="460" cy="340" r="1.5" fill="white" opacity="0.06" />
@@ -128,21 +62,10 @@ function FoodLineArt() {
       <circle cx="450" cy="650" r="3" fill="white" opacity="0.05" />
       <circle cx="380" cy="720" r="1.5" fill="white" opacity="0.06" />
       {/* Leaf 2 */}
-      <path
-        d="M350 580 Q380 550 395 580 Q380 610 350 580Z"
-        opacity="0.05"
-        stroke="white"
-        strokeWidth="1"
-        fill="none"
-      />
+      <path d="M350 580 Q380 550 395 580 Q380 610 350 580Z" opacity="0.05" stroke="white" strokeWidth="1" fill="none" />
       {/* Star shapes */}
-      <path
-        d="M470 440 L473 448 L481 448 L475 453 L477 461 L470 456 L463 461 L465 453 L459 448 L467 448Z"
-        opacity="0.05"
-        stroke="white"
-        strokeWidth="0.8"
-        fill="none"
-      />
+      <path d="M470 440 L473 448 L481 448 L475 453 L477 461 L470 456 L463 461 L465 453 L459 448 L467 448Z"
+        opacity="0.05" stroke="white" strokeWidth="0.8" fill="none" />
       {/* Wheat/grain lines */}
       <g opacity="0.04" stroke="white" strokeWidth="1">
         <path d="M490 700 Q500 680 490 660" fill="none" />
@@ -154,10 +77,7 @@ function FoodLineArt() {
 }
 
 // Rotating circular text ring
-function CircularText({
-  radius = 130,
-  text = "FRESH · TASTY · SATISFYING · ",
-}) {
+function CircularText({ radius = 130, text = "FRESH · TASTY · SATISFYING · " }) {
   const chars = text.split("");
   const angleStep = 360 / chars.length;
   return (
@@ -226,12 +146,7 @@ function FloatingParticles() {
             background: `radial-gradient(circle, rgba(253,211,77,0.6), rgba(253,211,77,0.1))`,
           }}
           animate={{ y: [-8, 8, -8], opacity: [0.3, 0.7, 0.3] }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
     </>
@@ -243,10 +158,7 @@ export default function HeroSection() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
 
   useEffect(() => {
-    const t = setInterval(
-      () => setActive((v) => (v + 1) % SLIDES.length),
-      3500,
-    );
+    const t = setInterval(() => setActive((v) => (v + 1) % SLIDES.length), 3500);
     return () => clearInterval(t);
   }, []);
 
@@ -276,35 +188,11 @@ export default function HeroSection() {
 
       {/* Geometric diagonal pattern overlay */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <svg
-          className="absolute inset-0 w-full h-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern
-              id="hero-grid"
-              x="0"
-              y="0"
-              width="48"
-              height="48"
-              patternUnits="userSpaceOnUse"
-            >
-              <line
-                x1="0"
-                y1="48"
-                x2="48"
-                y2="0"
-                stroke="rgba(255,255,255,0.04)"
-                strokeWidth="1"
-              />
-              <line
-                x1="0"
-                y1="0"
-                x2="48"
-                y2="48"
-                stroke="rgba(255,255,255,0.02)"
-                strokeWidth="0.5"
-              />
+            <pattern id="hero-grid" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="48" x2="48" y2="0" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+              <line x1="0" y1="0" x2="48" y2="48" stroke="rgba(255,255,255,0.02)" strokeWidth="0.5" />
               <circle cx="0" cy="0" r="1" fill="rgba(255,255,255,0.04)" />
               <circle cx="48" cy="48" r="1" fill="rgba(255,255,255,0.04)" />
               <circle cx="48" cy="0" r="1" fill="rgba(255,255,255,0.04)" />
@@ -320,19 +208,13 @@ export default function HeroSection() {
         animate={{ scale: [1, 1.12, 1], opacity: [0.15, 0.28, 0.15] }}
         transition={{ duration: 9, repeat: Infinity }}
         className="absolute -top-20 -right-20 w-[700px] h-[700px] rounded-full blur-3xl pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(253,211,77,0.1), transparent 70%)",
-        }}
+        style={{ background: "radial-gradient(circle, rgba(253,211,77,0.1), transparent 70%)" }}
       />
       <motion.div
         animate={{ scale: [1, 0.88, 1], opacity: [0.1, 0.2, 0.1] }}
         transition={{ duration: 11, repeat: Infinity, delay: 2 }}
         className="absolute -bottom-40 -left-20 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(0,0,0,0.4), transparent 70%)",
-        }}
+        style={{ background: "radial-gradient(circle, rgba(0,0,0,0.4), transparent 70%)" }}
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
@@ -342,6 +224,7 @@ export default function HeroSection() {
         >
           {/* ── LEFT ── */}
           <div className="order-2 lg:order-1 lg:pr-8">
+
             {/* Badges */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -364,11 +247,7 @@ export default function HeroSection() {
               <motion.h1
                 initial={{ opacity: 0, y: 60 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.1,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="font-display font-bold leading-[1.0] tracking-tight"
                 style={{ fontSize: "clamp(50px, 6.5vw, 84px)" }}
               >
@@ -376,8 +255,7 @@ export default function HeroSection() {
                 <span
                   className="block"
                   style={{
-                    background:
-                      "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
+                    background: "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -388,8 +266,7 @@ export default function HeroSection() {
                 <span
                   className="block"
                   style={{
-                    background:
-                      "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
+                    background: "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -406,10 +283,7 @@ export default function HeroSection() {
               animate={inView ? { scaleX: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.7 }}
               className="h-1 w-24 rounded-full origin-left mb-6"
-              style={{
-                background:
-                  "linear-gradient(to right, #FCD34D, rgba(253,211,77,0))",
-              }}
+              style={{ background: "linear-gradient(to right, #FCD34D, rgba(253,211,77,0))" }}
             />
 
             {/* Subtext with left border accent */}
@@ -422,9 +296,7 @@ export default function HeroSection() {
               <p className="text-white/75 text-lg leading-relaxed max-w-md font-sans">
                 From local favourites to continental classics, explore our
                 delicious menu and enjoy fast delivery to your doorstep across{" "}
-                <span className="text-white font-semibold">
-                  5 Lagos locations.
-                </span>
+                <span className="text-white font-semibold">5 Lagos locations.</span>
               </p>
             </motion.div>
 
@@ -437,16 +309,10 @@ export default function HeroSection() {
             >
               <Link to="/order">
                 <motion.button
-                  whileHover={{
-                    scale: 1.04,
-                    boxShadow: "0 12px 40px rgba(217,119,6,0.5)",
-                  }}
+                  whileHover={{ scale: 1.04, boxShadow: "0 12px 40px rgba(217,119,6,0.5)" }}
                   whileTap={{ scale: 0.97 }}
                   className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-2xl text-base transition-all font-sans shadow-lg"
-                  style={{
-                    background: "linear-gradient(135deg, #FCD34D, #D97706)",
-                    color: "#111",
-                  }}
+                  style={{ background: "linear-gradient(135deg, #FCD34D, #D97706)", color: "#111" }}
                 >
                   <MdOutlineDeliveryDining size={20} />
                   Order Online
@@ -461,10 +327,7 @@ export default function HeroSection() {
 
               <Link to="/reservations">
                 <motion.button
-                  whileHover={{
-                    scale: 1.04,
-                    backgroundColor: "rgba(255,255,255,0.18)",
-                  }}
+                  whileHover={{ scale: 1.04, backgroundColor: "rgba(255,255,255,0.18)" }}
                   whileTap={{ scale: 0.97 }}
                   className="inline-flex items-center gap-2 bg-white/10 border-2 border-white/25 text-white font-bold px-8 py-4 rounded-2xl text-base transition-all font-sans backdrop-blur-sm"
                 >
@@ -481,36 +344,18 @@ export default function HeroSection() {
               className="flex flex-wrap items-center gap-6"
             >
               {[
-                {
-                  icon: <MdOutlineDeliveryDining size={20} />,
-                  label: "Fast Delivery",
-                  sub: "To all locations",
-                },
-                {
-                  icon: <IoFlameSharp size={20} />,
-                  label: "Quality Meals",
-                  sub: "Fresh & Delicious",
-                },
-                {
-                  icon: <FiShield size={20} />,
-                  label: "Secure Payment",
-                  sub: "Pay safely online",
-                },
+                { icon: <MdOutlineDeliveryDining size={20} />, label: "Fast Delivery", sub: "To all locations" },
+                { icon: <IoFlameSharp size={20} />, label: "Quality Meals", sub: "Fresh & Delicious" },
+                { icon: <FiShield size={20} />, label: "Secure Payment", sub: "Pay safely online" },
               ].map((feat, i) => (
                 <div key={feat.label} className="flex items-center gap-3">
-                  {i > 0 && (
-                    <div className="w-px h-8 bg-white/15 hidden sm:block" />
-                  )}
+                  {i > 0 && <div className="w-px h-8 bg-white/15 hidden sm:block" />}
                   <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/70 flex-shrink-0">
                     {feat.icon}
                   </div>
                   <div>
-                    <p className="text-white text-sm font-bold font-sans leading-none">
-                      {feat.label}
-                    </p>
-                    <p className="text-white/50 text-xs font-sans mt-0.5">
-                      {feat.sub}
-                    </p>
+                    <p className="text-white text-sm font-bold font-sans leading-none">{feat.label}</p>
+                    <p className="text-white/50 text-xs font-sans mt-0.5">{feat.sub}</p>
                   </div>
                 </div>
               ))}
@@ -524,6 +369,7 @@ export default function HeroSection() {
             transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="order-1 lg:order-2 relative flex flex-col items-center"
           >
+
             {/* "Deliciously Made for You!" floating text */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -533,11 +379,7 @@ export default function HeroSection() {
             >
               <motion.div
                 animate={{ rotate: [-2, 2, -2] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="text-right"
               >
                 <p
@@ -576,21 +418,8 @@ export default function HeroSection() {
                 {/* Arrow */}
                 <div className="flex justify-end mt-1">
                   <svg width="40" height="30" viewBox="0 0 40 30">
-                    <path
-                      d="M5 5 Q20 2 35 25"
-                      stroke="#FCD34D"
-                      strokeWidth="1.5"
-                      fill="none"
-                      opacity="0.7"
-                      strokeDasharray="3 2"
-                    />
-                    <path
-                      d="M30 22 L35 25 L32 20"
-                      stroke="#FCD34D"
-                      strokeWidth="1.5"
-                      fill="none"
-                      opacity="0.7"
-                    />
+                    <path d="M5 5 Q20 2 35 25" stroke="#FCD34D" strokeWidth="1.5" fill="none" opacity="0.7" strokeDasharray="3 2" />
+                    <path d="M30 22 L35 25 L32 20" stroke="#FCD34D" strokeWidth="1.5" fill="none" opacity="0.7" />
                   </svg>
                 </div>
               </motion.div>
@@ -600,8 +429,7 @@ export default function HeroSection() {
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                background:
-                  "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(253,211,77,0.13) 0%, transparent 70%)",
+                background: "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(253,211,77,0.13) 0%, transparent 70%)",
               }}
             />
 
@@ -611,8 +439,7 @@ export default function HeroSection() {
               style={{
                 width: "clamp(340px, 44vw, 580px)",
                 height: "clamp(340px, 44vw, 580px)",
-                background:
-                  "radial-gradient(circle, rgba(180,0,0,0.0) 55%, rgba(253,211,77,0.06) 70%, transparent 100%)",
+                background: "radial-gradient(circle, rgba(180,0,0,0.0) 55%, rgba(253,211,77,0.06) 70%, transparent 100%)",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
@@ -639,8 +466,7 @@ export default function HeroSection() {
                   className="w-full h-full relative z-10"
                   style={{
                     objectFit: "contain",
-                    filter:
-                      "drop-shadow(0 30px 60px rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(217,119,6,0.2))",
+                    filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(217,119,6,0.2))",
                   }}
                   loading="eager"
                 />
@@ -658,16 +484,10 @@ export default function HeroSection() {
                 >
                   <div className="bg-white/95 backdrop-blur-md rounded-2xl px-4 py-2.5 shadow-xl">
                     <div className="flex items-center gap-2">
-                      <span className="text-brand-red">
-                        {currentSlide.icon}
-                      </span>
+                      <span className="text-brand-red">{currentSlide.icon}</span>
                       <div>
-                        <p className="text-gray-900 text-xs font-bold font-sans leading-none">
-                          {currentSlide.label}
-                        </p>
-                        <p className="text-gray-400 text-[10px] font-sans mt-0.5">
-                          {currentSlide.service}
-                        </p>
+                        <p className="text-gray-900 text-xs font-bold font-sans leading-none">{currentSlide.label}</p>
+                        <p className="text-gray-400 text-[10px] font-sans mt-0.5">{currentSlide.service}</p>
                       </div>
                     </div>
                   </div>
@@ -677,11 +497,7 @@ export default function HeroSection() {
               {/* Fresh Daily badge */}
               <motion.div
                 animate={{ y: [0, -6, 0] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -right-2 lg:-right-6 top-1/3 hidden sm:block z-20"
               >
                 <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl px-4 py-3 border border-gray-100/50">
@@ -690,12 +506,8 @@ export default function HeroSection() {
                       <IoFlameSharp className="text-white" size={15} />
                     </div>
                     <div>
-                      <p className="text-gray-900 text-xs font-bold font-sans leading-none">
-                        Fresh Daily
-                      </p>
-                      <p className="text-gray-400 text-[10px] font-sans mt-0.5">
-                        Made every morning
-                      </p>
+                      <p className="text-gray-900 text-xs font-bold font-sans leading-none">Fresh Daily</p>
+                      <p className="text-gray-400 text-[10px] font-sans mt-0.5">Made every morning</p>
                     </div>
                   </div>
                 </div>
@@ -704,34 +516,20 @@ export default function HeroSection() {
               {/* New — Order count floating badge */}
               <motion.div
                 animate={{ y: [0, 5, 0] }}
-                transition={{
-                  duration: 4,
-                  delay: 1,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                transition={{ duration: 4, delay: 1, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -left-2 lg:-left-4 bottom-1/4 hidden sm:block z-20"
               >
                 <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl px-3 py-2.5 border border-gray-100/50">
                   <div className="flex items-center gap-2">
                     <div
                       className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: "linear-gradient(135deg, #FCD34D, #D97706)",
-                      }}
+                      style={{ background: "linear-gradient(135deg, #FCD34D, #D97706)" }}
                     >
-                      <FiStar
-                        size={14}
-                        style={{ fill: "#111", stroke: "#111" }}
-                      />
+                      <FiStar size={14} style={{ fill: "#111", stroke: "#111" }} />
                     </div>
                     <div>
-                      <p className="text-gray-900 text-xs font-bold font-sans leading-none">
-                        5,000+ Orders
-                      </p>
-                      <p className="text-gray-400 text-[10px] font-sans mt-0.5">
-                        This month
-                      </p>
+                      <p className="text-gray-900 text-xs font-bold font-sans leading-none">5,000+ Orders</p>
+                      <p className="text-gray-400 text-[10px] font-sans mt-0.5">This month</p>
                     </div>
                   </div>
                 </div>
