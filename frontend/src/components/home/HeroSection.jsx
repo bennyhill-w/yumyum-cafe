@@ -451,7 +451,7 @@ export default function HeroSection() {
           className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center min-h-screen pt-28 pb-16 lg:pt-24 lg:pb-0 relative z-10"
         >
           {/* ── LEFT — text transitions per slide ── */}
-          <div className="order-2 lg:order-1 lg:pr-4">
+          <div className="order-1 lg:order-1 lg:pr-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide.id}
@@ -638,7 +638,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, x: 50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="order-1 lg:order-2 relative flex flex-col items-center"
+            className="order-2 lg:order-2 relative flex flex-col items-center"
           >
             {/* "Deliciously Made for You!" floating text */}
             <motion.div
@@ -712,10 +712,7 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Composite image container */}
-            <div
-              className="relative w-full max-w-none lg:max-w-[1700px] mx-auto flex items-center justify-center"
-              style={{ height: "clamp(760px, 92vw, 1120px)" }}
-            >
+            <div className="relative w-full max-w-sm sm:max-w-lg lg:max-w-none lg:w-full lg:mx-auto flex items-center justify-center h-[clamp(300px,85vw,420px)] lg:h-[clamp(760px,92vw,1120px)]">
               <CircularText radius={185} />
 
               <AnimatePresence mode="wait">
