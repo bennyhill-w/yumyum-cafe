@@ -11,17 +11,31 @@ import {
 } from "react-icons/fi";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { IoFlameSharp } from "react-icons/io5";
+import { TbIceCream } from "react-icons/tb";
+import { GiForkKnifeSpoon } from "react-icons/gi";
 import SectionDivider from "../../components/ui/SectionDivider";
 
 import heroMeals from "../../assets/hero-meals.png";
+import heroDesserts from "../../assets/hero-desserts.png";
+import heroNigerian from "../../assets/hero-nigerian.png";
 
-// Each slide is a rich composite image with its own set of annotation cards.
-// Add more slides here later (e.g. heroSoups, heroCombos) once you generate them
-// in the same composite style — the layout is built to support any number of slides.
+// Each slide is a rich composite image with its own annotation cards AND
+// its own left-side headline/content. Add more slides here as you generate
+// more composite images in the same style.
 const SLIDES = [
   {
     id: 1,
     image: heroMeals,
+    badge: "Lagos' Favourite Fast Food",
+    badgeIcon: <IoFlameSharp size={12} className="text-yellow-300" />,
+    headline: ["Hungry?", "We've got", "you covered."],
+    subtext: (
+      <>
+        From local favourites to continental classics, explore our delicious
+        menu and enjoy fast delivery to your doorstep across{" "}
+        <span className="text-white font-semibold">5 Lagos locations.</span>
+      </>
+    ),
     cards: [
       {
         id: "sweet",
@@ -49,6 +63,96 @@ const SLIDES = [
         icon: <MdOutlineDeliveryDining size={13} />,
         title: "FRESHLY BAKED",
         text: "Soft, Delicious & Made for You.",
+        position: "top-[62%] right-[0%] lg:right-[-4%]",
+      },
+    ],
+  },
+  {
+    id: 2,
+    image: heroDesserts,
+    badge: "Sweet Cravings Satisfied",
+    badgeIcon: <TbIceCream size={13} className="text-yellow-300" />,
+    headline: ["Craving", "Something", "sweet today?"],
+    subtext: (
+      <>
+        Hand-scooped ice cream, creamy sundaes, and decadent cakes made fresh
+        daily — the perfect way to end any meal, or enjoy any time{" "}
+        <span className="text-white font-semibold">across all 5 branches.</span>
+      </>
+    ),
+    cards: [
+      {
+        id: "scoop",
+        icon: <TbIceCream size={13} />,
+        title: "HAND-SCOOPED",
+        text: "Creamy & irresistible.",
+        position: "top-[20%] left-[2%] lg:left-[-4%]",
+      },
+      {
+        id: "cake",
+        icon: <FiStar size={13} />,
+        title: "FRESH CAKES",
+        text: "Baked in-house daily.",
+        position: "top-[60%] left-[0%] lg:left-[-6%]",
+      },
+      {
+        id: "sundae",
+        icon: <IoFlameSharp size={13} />,
+        title: "LOADED SUNDAES",
+        text: "Piled high, always fresh.",
+        position: "top-[16%] right-[0%] lg:right-[-6%]",
+      },
+      {
+        id: "shake",
+        icon: <FiStar size={13} />,
+        title: "SIGNATURE CUPS",
+        text: "A treat worth the trip.",
+        position: "top-[64%] right-[0%] lg:right-[-4%]",
+      },
+    ],
+  },
+  {
+    id: 3,
+    image: heroNigerian,
+    badge: "Authentic Nigerian Classics",
+    badgeIcon: <GiForkKnifeSpoon size={12} className="text-yellow-300" />,
+    headline: ["Taste of", "Home, Made", "Fresh Daily."],
+    subtext: (
+      <>
+        Native rice, jollof, soups, swallow and more — real Nigerian flavour
+        cooked the way you remember it, ready for pickup or delivery{" "}
+        <span className="text-white font-semibold">
+          across 5 Lagos locations.
+        </span>
+      </>
+    ),
+    cards: [
+      {
+        id: "native",
+        icon: <GiForkKnifeSpoon size={13} />,
+        title: "NATIVE RICE",
+        text: "Bold, spicy, unforgettable.",
+        position: "top-[22%] left-[2%] lg:left-[-4%]",
+      },
+      {
+        id: "swallow",
+        icon: <FiStar size={13} />,
+        title: "SWALLOW & SOUP",
+        text: "Just like home-cooked.",
+        position: "top-[58%] left-[0%] lg:left-[-6%]",
+      },
+      {
+        id: "jollof",
+        icon: <IoFlameSharp size={13} />,
+        title: "PARTY JOLLOF",
+        text: "The taste everyone talks about.",
+        position: "top-[18%] right-[0%] lg:right-[-6%]",
+      },
+      {
+        id: "sides",
+        icon: <FiStar size={13} />,
+        title: "HEARTY SIDES",
+        text: "Moi moi, plantain & more.",
         position: "top-[62%] right-[0%] lg:right-[-4%]",
       },
     ],
@@ -231,6 +335,7 @@ function AnnotationCard({ card, index }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5, delay: 0.5 + index * 0.15 }}
       className={`absolute ${card.position} z-20 hidden md:block`}
     >
@@ -265,7 +370,7 @@ export default function HeroSection() {
     if (SLIDES.length <= 1) return;
     const t = setInterval(
       () => setActive((v) => (v + 1) % SLIDES.length),
-      5000,
+      6000,
     );
     return () => clearInterval(t);
   }, []);
@@ -345,94 +450,106 @@ export default function HeroSection() {
           ref={ref}
           className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center min-h-screen pt-28 pb-16 lg:pt-24 lg:pb-0 relative z-10"
         >
-          {/* ── LEFT ── */}
+          {/* ── LEFT — text transitions per slide ── */}
           <div className="order-2 lg:order-1 lg:pr-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5 }}
-              className="flex items-center gap-2 mb-7 flex-wrap"
-            >
-              <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-bold px-4 py-2 rounded-full font-sans backdrop-blur-sm">
-                <IoFlameSharp size={12} className="text-yellow-300" />
-                Lagos&apos; Favourite Fast Food
-              </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 text-white text-xs font-bold px-3 py-2 rounded-full font-sans">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                Open Now
-              </span>
-            </motion.div>
-
-            <div className="overflow-hidden mb-4">
-              <motion.h1
-                initial={{ opacity: 0, y: 60 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.1,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className="font-display font-bold leading-[1.0] tracking-tight"
-                style={{ fontSize: "clamp(50px, 6.5vw, 84px)" }}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide.id}
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -25 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
-                <span className="block text-white">Hungry?</span>
-                <span
-                  className="block"
+                {/* Badge */}
+                <div className="flex items-center gap-2 mb-7 flex-wrap">
+                  <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-bold px-4 py-2 rounded-full font-sans backdrop-blur-sm">
+                    {currentSlide.badgeIcon}
+                    {currentSlide.badge}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 text-white text-xs font-bold px-3 py-2 rounded-full font-sans">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    Open Now
+                  </span>
+                </div>
+
+                {/* Headline */}
+                <div className="overflow-hidden mb-4">
+                  <h1
+                    className="font-display font-bold leading-[1.0] tracking-tight"
+                    style={{ fontSize: "clamp(50px, 6.5vw, 84px)" }}
+                  >
+                    <motion.span
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.05 }}
+                      className="block text-white"
+                    >
+                      {currentSlide.headline[0]}
+                    </motion.span>
+                    <motion.span
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.15 }}
+                      className="block"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {currentSlide.headline[1]}
+                    </motion.span>
+                    <motion.span
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.25 }}
+                      className="block"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {currentSlide.headline[2]}
+                    </motion.span>
+                  </h1>
+                </div>
+
+                {/* Gold underline */}
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, delay: 0.35 }}
+                  className="h-1 w-24 rounded-full origin-left mb-6"
                   style={{
                     background:
-                      "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                      "linear-gradient(to right, #FCD34D, rgba(253,211,77,0))",
                   }}
-                >
-                  We&apos;ve got
-                </span>
-                <span
-                  className="block"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #FEF3C7 0%, #FCD34D 40%, #D97706 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  you covered.
-                </span>
-              </motion.h1>
-            </div>
+                />
 
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={inView ? { scaleX: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="h-1 w-24 rounded-full origin-left mb-6"
-              style={{
-                background:
-                  "linear-gradient(to right, #FCD34D, rgba(253,211,77,0))",
-              }}
-            />
+                {/* Subtext */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="border-l-2 border-yellow-400 pl-4 mb-8"
+                >
+                  <p className="text-white/75 text-lg leading-relaxed max-w-md font-sans">
+                    {currentSlide.subtext}
+                  </p>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
 
+            {/* CTAs — stay static, no need to re-animate on every slide */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="border-l-2 border-yellow-400 pl-4 mb-8"
-            >
-              <p className="text-white/75 text-lg leading-relaxed max-w-md font-sans">
-                From local favourites to continental classics, explore our
-                delicious menu and enjoy fast delivery to your doorstep across{" "}
-                <span className="text-white font-semibold">
-                  5 Lagos locations.
-                </span>
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.45 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
               className="flex flex-wrap gap-4 mb-10"
             >
               <Link to="/order">
@@ -476,7 +593,7 @@ export default function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.55 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
               className="flex flex-wrap items-center gap-6"
             >
               {[
@@ -635,13 +752,14 @@ export default function HeroSection() {
               </AnimatePresence>
             </div>
 
-            {/* Progress bar — only shown if more than 1 slide */}
+            {/* Progress bar */}
             {SLIDES.length > 1 && (
               <div className="flex gap-1.5 mt-6 relative z-10">
                 {SLIDES.map((_, i) => (
-                  <div
+                  <button
                     key={i}
-                    className="h-1 rounded-full overflow-hidden transition-all duration-300"
+                    onClick={() => setActive(i)}
+                    className="h-1 rounded-full overflow-hidden transition-all duration-300 cursor-pointer"
                     style={{
                       width: i === active ? 28 : 8,
                       backgroundColor: "rgba(255,255,255,0.2)",
@@ -653,11 +771,11 @@ export default function HeroSection() {
                         style={{ background: "#FCD34D" }}
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
-                        transition={{ duration: 5, ease: "linear" }}
+                        transition={{ duration: 6, ease: "linear" }}
                         key={active}
                       />
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
