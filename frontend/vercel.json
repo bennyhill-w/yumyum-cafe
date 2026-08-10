@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/admin",
+      "destination": "https://yumyum-cafe-ftmy.vercel.app"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "https://yumyum-cafe-ftmy.vercel.app/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
