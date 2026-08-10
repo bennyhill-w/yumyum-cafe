@@ -48,7 +48,7 @@ export default function App() {
   return (
     <>
       <SessionGuard />
-      <BrowserRouter>
+      <BrowserRouter basename="/admin">
         <Routes>
           <Route path="/" element={<PageWrapper />}>
             <Route index element={<Home />} />
