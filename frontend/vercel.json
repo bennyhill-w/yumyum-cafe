@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/admin",
-      "destination": "https://yumyum-cafe.vercel.app"
+      "destination": "https://yumyum-cafe-ftmy.vercel.app"
     },
     {
       "source": "/admin/:path*",
-      "destination": "https://yumyum-cafe.vercel.app/:path*"
+      "destination": "https://yumyum-cafe-ftmy.vercel.app/:path*"
     },
     {
       "source": "/(.*)",

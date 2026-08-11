@@ -169,8 +169,15 @@ export default function Footer() {
           <p className="text-white/45 text-xs text-center sm:text-left">
             © {currentYear} Yum-Yum Cafe. All rights reserved.
           </p>
-          <p className="text-white/30 text-xs">
+          <p className="text-white/30 text-xs flex items-center gap-3">
             Serving Lagos with love since 2018
+            <span className="text-white/20">·</span>
+            <a
+              href="/admin"
+              className="text-white/25 hover:text-white/50 transition-colors"
+            >
+              Staff Login
+            </a>
           </p>
         </div>
       </div>
