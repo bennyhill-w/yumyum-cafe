@@ -61,7 +61,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}"],
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        navigateFallbackDenylist: [/^\/admin/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/yumyum-cafe\.onrender\.com\/api\/.*/i,
